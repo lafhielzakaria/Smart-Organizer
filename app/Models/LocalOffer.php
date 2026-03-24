@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LocalOffer extends Model
 {
-    protected $fillable = ['startTime', 'endTime', 'pricePerPerson', 'maxParticipants', 'status', 'local_id'];
+    protected $fillable = ['startTime', 'endTime', 'totalPrice', 'maxParticipants', 'status', 'local_id'];
 
     protected $casts = [
         'startTime' => 'datetime',

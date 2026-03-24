@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->dateTime('startTime');
             $table->dateTime('endTime');
-            $table->integer('pricePerPerson');
+            $table->integer('totalPrice');
             $table->integer('maxParticipants');
             $table->enum('status', ['available', 'completed', 'cancelled'])->default('available');
             $table->foreignId('local_id')->constrained('locals')->onDelete('cascade');

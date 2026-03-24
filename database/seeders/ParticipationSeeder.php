@@ -19,7 +19,7 @@ class ParticipationSeeder extends Seeder
                 Participation::create([
                     'joinedAt' => fake()->dateTimeBetween('-1 month', 'now'),
                     'user_id' => $users->random()->id,
-                    'sharePrice' => $offer->pricePerPerson,
+                    'sharePrice' => $offer->totalPrice,
                     'leftAt' => fake()->boolean(30) ? fake()->dateTimeBetween('now', '+1 week') : null,
                     'local_offer_id' => $offer->id,
                 ]);

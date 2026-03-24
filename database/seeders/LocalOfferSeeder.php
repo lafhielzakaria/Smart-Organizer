@@ -17,7 +17,7 @@ class LocalOfferSeeder extends Seeder
                 LocalOffer::create([
                     'startTime' => fake()->dateTimeBetween('now', '+1 month'),
                     'endTime' => fake()->dateTimeBetween('+1 month', '+2 months'),
-                    'pricePerPerson' => fake()->numberBetween(20, 150),
+                    'totalPrice' => fake()->numberBetween(20, 150),
                     'maxParticipants' => fake()->numberBetween(10, 50),
                     'status' => fake()->randomElement(['available', 'completed', 'cancelled']),
                     'local_id' => $local->id,

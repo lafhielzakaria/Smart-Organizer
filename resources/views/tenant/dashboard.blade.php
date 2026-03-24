@@ -49,6 +49,12 @@
             <p class="text-gray-500 dark:text-gray-400 mt-1">Here's an overview of your locals and offers</p>
         </div>
 
+        @if(session('success'))
+        <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/30 rounded-lg">
+            <p class="text-sm text-green-600 dark:text-green-400">{{ session('success') }}</p>
+        </div>
+        @endif
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-colors duration-500">
                 <div class="flex items-center justify-between">
@@ -159,8 +165,12 @@
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md transition-colors duration-500">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">My Offers</h3>
+                @if($myLocals->count() > 0)
+                <button id="open-modal-btn" class="px-3 py-1.5 text-xs font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200">+ Create Offer</button>
+                @endif
+
             </div>
             @php $allOffers = $myLocals->flatMap(fn($l) => $l->localOffers->each(fn($o) => $o->localName = $l->name)); @endphp
             @if($allOffers->count() > 0)
@@ -180,11 +190,11 @@
                         ])>{{ ucfirst($offer->status) }}</span>
                     </div>
                     <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-3">
-                        <span>{{ $offer->pricePerPerson }} pts/person</span>
-                        <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $offer->participations_count }} / {{ $offer->maxParticipants }}</span>
+                        <span>{{ $offer->totalPrice }} pts</span>
+                        <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $offer->participations->count() }} / {{ $offer->maxParticipants }}</span>
                     </div>
                     <div class="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
-                        <div class="bg-indigo-500 h-1.5 rounded-full" style="width: {{ $offer->maxParticipants > 0 ? round(($offer->participations_count / $offer->maxParticipants) * 100) : 0 }}%"></div>
+                        <div class="bg-indigo-500 h-1.5 rounded-full" style="width: {{ $offer->maxParticipants > 0 ? round(($offer->participations->count() / $offer->maxParticipants) * 100) : 0 }}%"></div>
                     </div>
                 </div>
                 @endforeach
@@ -201,7 +211,71 @@
 
     </div>
 </div>
+
+{{-- Create Offer Modal --}}
+<div id="offer-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(0,0,0,0.5)">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:28rem;max-height:90vh;overflow-y:auto" class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6">
+        <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">New Offer</h3>
+            <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none">&times;</button>
+        </div>
+
+        @if($errors->any())
+        <div class="mb-4 p-3 bg-red-50 dark:bg-red-900/30 rounded-lg">
+            @foreach($errors->all() as $error)
+            <p class="text-sm text-red-600 dark:text-red-400">{{ $error }}</p>
+            @endforeach
+        </div>
+        @endif
+
+        <form id="offer-form" method="POST" action="" class="space-y-4">
+            @csrf
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Local</label>
+                <select id="local-select" name="local_id" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    @foreach($myLocals as $local)
+                    <option value="{{ $local->id }}">{{ $local->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
+                <input type="datetime-local" name="startTime" value="{{ old('startTime') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Time</label>
+                <input type="datetime-local" name="endTime" value="{{ old('endTime') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Price (pts)</label>
+                <input type="number" name="totalPrice" value="{{ old('totalPrice') }}" min="1" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Participants</label>
+                <input type="number" name="maxParticipants" value="{{ old('maxParticipants') }}" min="1" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors duration-200">Create Offer</button>
+        </form>
+    </div>
+</div>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal    = document.getElementById('offer-modal');
+        const openBtn  = document.getElementById('open-modal-btn');
+        const closeBtn = document.getElementById('close-modal-btn');
+
+        if (openBtn)  openBtn.addEventListener('click', function () { modal.style.display = 'flex'; });
+        if (closeBtn) closeBtn.addEventListener('click', function () { modal.style.display = 'none'; });
+
+        document.getElementById('offer-form').addEventListener('submit', function () {
+            this.action = '/tenant/locals/' + document.getElementById('local-select').value + '/offers';
+        });
+
+        @if($errors->any())
+            modal.style.display = 'flex';
+        @endif
+    });
+
     function toggleViewAll() {
         const top = document.getElementById('locals-view-time');
         const all = document.getElementById('locals-view-all');
