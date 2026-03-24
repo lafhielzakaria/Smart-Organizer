@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Tenant\DashboardController as TenantDashboardController;
 use App\Http\Controllers\Auth\AuthController;
 
 Route::get('/', function () {
@@ -22,8 +23,11 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-Route::post('/admin/users/{user}/ban', [DashboardController::class, 'banUser'])->name('admin.users.ban');
-Route::post('/admin/users/{user}/unban', [DashboardController::class, 'unbanUser'])->name('admin.users.unban');
-Route::post('/admin/locals/{local}/ban', [DashboardController::class, 'banLocal'])->name('admin.locals.ban');
-Route::post('/admin/locals/{local}/unban', [DashboardController::class, 'unbanLocal'])->name('admin.locals.unban');
+Route::middleware('auth')->group(function () {
+    Route::get('/tenant/dashboard', [TenantDashboardController::class, 'index'])->name('tenant.dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::post('/admin/users/{user}/ban', [DashboardController::class, 'banUser'])->name('admin.users.ban');
+    Route::post('/admin/users/{user}/unban', [DashboardController::class, 'unbanUser'])->name('admin.users.unban');
+    Route::post('/admin/locals/{local}/ban', [DashboardController::class, 'banLocal'])->name('admin.locals.ban');
+    Route::post('/admin/locals/{local}/unban', [DashboardController::class, 'unbanLocal'])->name('admin.locals.unban');
+});

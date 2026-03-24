@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('views_analytics', function (Blueprint $table) {
             $table->id();
-            $table->integer('hoverTime');
+            $table->integer('viewTime');
             $table->foreignId('local_offer_id')->constrained('local_offers')->onDelete('cascade');
             $table->timestamps();
         });

@@ -25,7 +25,11 @@ class AuthController extends Controller
             if ($user->role_id == 1) {
                 return redirect()->route('admin.dashboard');
             }
-            
+
+            if ($user->role_id == 2) {
+                return redirect()->route('tenant.dashboard');
+            }
+
             return redirect('/');
         }
 

@@ -15,7 +15,7 @@ class ViewsAnalyticsSeeder extends Seeder
         foreach ($offers as $offer) {
             for ($i = 0; $i < rand(10, 30); $i++) {
                 ViewsAnalytics::create([
-                    'hoverTime' => fake()->numberBetween(1, 300),
+                    'viewTime' => fake()->numberBetween(1, 300),
                     'local_offer_id' => $offer->id,
                 ]);
             }
