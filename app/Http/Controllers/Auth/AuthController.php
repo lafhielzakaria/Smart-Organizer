@@ -21,15 +21,17 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            
+                
             if ($user->role_id == 1) {
                 return redirect()->route('admin.dashboard');
             }
 
-            if ($user->role_id == 2) {
+           else if ($user->role_id == 2) {
                 return redirect()->route('tenant.dashboard');
             }
-
+            else {
+                return redirect()->route('lessor.dashboard'); 
+            }
             return redirect('/');
         }
 

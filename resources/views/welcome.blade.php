@@ -5,204 +5,330 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Smart Organizer - Shared Local Management Platform</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-    <script>
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
+        :root {
+            --primary: #111111;
+            --blue: #111111;
+            --yellow: #111111;
+            --gray-bg: #F5F5F5;
+            --radius: 20px;
         }
-    </script>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-bg); color: var(--primary); }
+
+        .navbar { background: #fff; border-bottom: 1px solid #E8EAF0; position: fixed; top: 0; width: 100%; z-index: 100; transition: background .3s, border-color .3s; }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; align-items: center; height: 68px; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: #0B1B3F; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 20px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; transition: color .3s; }
+        .logo-dot { color: #111111; }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+        .nav-link { font-size: 14px; font-weight: 500; color: #8892A4; text-decoration: none; padding: 8px 14px; border-radius: 999px; transition: all .2s; }
+        .nav-link:hover { color: #111111; background: var(--gray-bg); }
+        .btn-nav { background: var(--primary); color: #fff; border-radius: 999px; padding: 9px 22px; font-size: 14px; font-weight: 600; text-decoration: none; transition: opacity .2s; }
+        .btn-nav:hover { opacity: .85; }
+        .btn-nav-outline { background: transparent; color: var(--primary); border: 1.5px solid #E8EAF0; border-radius: 999px; padding: 9px 22px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all .2s; }
+        .btn-nav-outline:hover { border-color: #111111; color: #111111; }
+
+        .hero { padding: 140px 32px 80px; max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 60px; }
+        .hero-left { flex: 1; }
+        .hero-title { font-size: 56px; font-weight: 800; color: var(--primary); line-height: 1.1; margin-bottom: 20px; }
+        .hero-title span { color: #111111; }
+        .hero-subtitle { font-size: 16px; color: #8892A4; line-height: 1.7; max-width: 480px; margin-bottom: 36px; }
+        .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn-primary { background: var(--primary); color: #fff; border-radius: 999px; padding: 14px 28px; font-size: 15px; font-weight: 700; text-decoration: none; transition: opacity .2s; display: inline-block; }
+        .btn-primary:hover { opacity: .85; }
+        .btn-secondary { background: #fff; color: var(--primary); border: 1.5px solid #E8EAF0; border-radius: 999px; padding: 14px 28px; font-size: 15px; font-weight: 700; text-decoration: none; transition: all .2s; display: inline-block; }
+        .btn-secondary:hover { border-color: #111111; color: #111111; }
+
+        .hero-right { flex-shrink: 0; position: relative; width: 380px; height: 380px; }
+        .blob { position: absolute; border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%; }
+        .blob-blue { width: 280px; height: 280px; background: #111111; top: 40px; left: 40px; opacity: .08; }
+        .blob-yellow { width: 180px; height: 180px; background: #555555; bottom: 20px; right: 20px; opacity: .1; border-radius: 50% 60% 40% 55% / 55% 45% 60% 40%; }
+        .circle { position: absolute; border-radius: 50%; }
+        .circle-dark { width: 90px; height: 90px; background: var(--primary); top: 20px; right: 60px; display: flex; align-items: center; justify-content: center; }
+        .circle-blue { width: 120px; height: 120px; background: #333333; bottom: 60px; left: 30px; display: flex; align-items: center; justify-content: center; }
+        .circle-yellow { width: 70px; height: 70px; background: #888888; top: 140px; left: 140px; display: flex; align-items: center; justify-content: center; }
+        .circle-sm { width: 50px; height: 50px; background: #fff; border: 3px solid var(--gray-bg); bottom: 30px; right: 40px; box-shadow: 0 4px 16px rgba(11,27,63,0.12); display: flex; align-items: center; justify-content: center; }
+        .stat-bubble { position: absolute; background: #fff; border-radius: 16px; padding: 12px 16px; box-shadow: 0 4px 20px rgba(11,27,63,0.1); }
+        .stat-bubble-1 { top: 0; left: 0; }
+        .stat-bubble-2 { bottom: 0; right: 0; }
+        .stat-num { font-size: 22px; font-weight: 800; color: var(--primary); }
+        .stat-lbl { font-size: 11px; color: #8892A4; font-weight: 500; }
+
+        .section { padding: 80px 32px; }
+        .section-inner { max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 56px; }
+        .section-tag { display: inline-block; background: rgba(0,0,0,0.07); color: #111111; font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 999px; margin-bottom: 12px; letter-spacing: .5px; text-transform: uppercase; }
+        .section-title { font-size: 36px; font-weight: 800; color: var(--primary); }
+        .section-title span { color: #111111; }
+        .section-sub { font-size: 15px; color: #8892A4; margin-top: 10px; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .feature-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: 0 2px 12px rgba(11,27,63,0.06); transition: transform .2s, box-shadow .2s; display: flex; flex-direction: column; }
+        .feature-card img { display: block; margin-bottom: 18px; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(11,27,63,0.1); }
+        .feature-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+        .feature-icon.blue { background: rgba(59,110,245,0.12); }
+        .feature-icon.green { background: rgba(34,197,94,0.12); }
+        .feature-icon.yellow { background: rgba(244,183,64,0.15); }
+        .feature-icon.dark { background: rgba(11,27,63,0.08); }
+        .feature-icon.purple { background: rgba(139,92,246,0.12); }
+        .feature-icon.cyan { background: rgba(6,182,212,0.12); }
+        .feature-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+        .feature-desc { font-size: 13px; color: #8892A4; line-height: 1.65; }
+
+        .roles-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .role-card { background: #fff; border-radius: var(--radius); padding: 28px 20px; text-align: center; box-shadow: 0 2px 12px rgba(11,27,63,0.06); transition: transform .2s; display: flex; flex-direction: column; align-items: center; }
+        .role-card img { display: block; margin-bottom: 16px; }
+        .role-card:hover { transform: translateY(-4px); }
+        .role-icon { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+        .role-icon.red { background: rgba(239,68,68,0.1); }
+        .role-icon.blue { background: rgba(59,110,245,0.1); }
+        .role-icon.green { background: rgba(34,197,94,0.1); }
+        .role-icon.purple { background: rgba(139,92,246,0.1); }
+        .role-name { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+        .role-desc { font-size: 13px; color: #8892A4; }
+
+        .cta-section { background: var(--primary); padding: 80px 32px; }
+        .cta-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+        .cta-title { font-size: 40px; font-weight: 800; color: #fff; margin-bottom: 16px; }
+        .cta-sub { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 36px; }
+        .btn-cta { background: #fff; color: #111111; border-radius: 999px; padding: 14px 32px; font-size: 15px; font-weight: 800; text-decoration: none; display: inline-block; transition: opacity .2s; }
+        .btn-cta:hover { opacity: .9; }
+
+        footer { background: #fff; border-top: 1px solid #E8EAF0; padding: 32px; text-align: center; }
+        body.dark { background: #111111; color: #fff; }
+        body.dark .navbar { background: #1a1a1a; border-color: #2a2a2a; }
+        body.dark .nav-link { color: #8892A4; }
+        body.dark .nav-link:hover { background: #2a2a2a; color: #fff; }
+        body.dark .btn-nav-outline { border-color: #2a2a2a; color: #fff; }
+        body.dark .feature-card,
+        body.dark .role-card,
+        body.dark .stat-bubble { background: #1a1a1a; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        body.dark .feature-title,
+        body.dark .role-name,
+        body.dark .stat-num { color: #fff; }
+        body.dark section.section { background: #111111 !important; }
+        body.dark footer { background: #1a1a1a; border-color: #2a2a2a; }
+        body.dark .logo-text { color: #fff; }
+        body.dark .footer-text { color: #8892A4; }
+        body:not(.dark) .logo-icon { background: #0B1B3F; }
+        body:not(.dark) .logo-text { color: var(--primary); }
+        body:not(.dark) .nav-link { color: #8892A4; }
+        .footer-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .footer-text { font-size: 13px; color: #8892A4; }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-900 transition-colors duration-500">
-    <!-- Navigation -->
-    <nav class="fixed w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-50 border-b border-gray-200 dark:border-gray-800 transition-colors duration-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center space-x-2">
-                    <svg class="w-8 h-8 text-blue-600 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                    </svg>
-                    <span class="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-500">Smart Organizer</span>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" width="18" height="18" alt="logo">
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button id="theme-toggle" type="button" class="p-2 text-gray-500 rounded-lg hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 transition-all duration-500 transform">
-                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 transition-all duration-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                        </svg>
-                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 transition-all duration-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-                        </svg>
-                    </button>
-                    
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-500">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-500">Login</a>
-                        <a href="{{ route('register') }}" class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-500">Get Started</a>
-                    @endauth
-                </div>
+                <span class="logo-text">Smart<span class="logo-dot">.</span>Organizer</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#roles" class="nav-link">Who It's For</a>
+                <button id="theme-toggle" style="background:#F5F6FA;border:none;border-radius:10px;padding:8px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                    <img id="theme-toggle-dark-icon" src="https://img.icons8.com/fluency/48/moon-symbol.png" width="22" height="22" alt="dark" style="display:none">
+                    <img id="theme-toggle-light-icon" src="https://img.icons8.com/ios-filled/50/0b1b3f/sun.png" width="18" height="18" alt="light" style="display:none">
+                </button>
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="btn-nav">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn-nav-outline">Login</a>
+                    <a href="{{ route('register') }}" class="btn-nav">Let's do it</a>
+                @endauth
             </div>
         </div>
     </nav>
 
-    <section class="pt-32 pb-20 px-4 transition-colors duration-500">
-        <div class="max-w-7xl mx-auto text-center">
-            <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-500">
-                Share Locals,<br>
-                <span class="text-blue-600 transition-colors duration-500">Split Costs Smartly</span>
-            </h1>
-            <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto transition-colors duration-500">
-                Smart Organizer helps you book sports fields, study rooms, and coworking spaces collaboratively. Join groups, divide costs fairly, and optimize space usage with our intelligent reservation system.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('register') }}" class="px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-500 shadow-lg">
-                    Start Organizing
-                </a>
-                <a href="#features" class="px-8 py-4 text-lg font-semibold text-blue-600 bg-white dark:bg-gray-800 dark:text-blue-400 rounded-lg hover:shadow-lg transition-all duration-500 border border-blue-600">
-                    Learn More
-                </a>
+    <section style="padding-top:68px">
+        <div class="hero">
+            <div class="hero-left">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6">
+                    Share Locals,<br>
+                    <span>Split Costs</span><br>
+                    Smartly
+                </h1>
+                <p class="hero-subtitle">
+                    Smart Organizer helps you book sports fields, study rooms, and coworking spaces collaboratively. Join groups, divide costs fairly, and optimize space usage with our intelligent reservation system.
+                </p>
+                <div class="hero-btns">
+                    <a href="{{ route('register') }}" class="btn-primary">Start Organizing</a>
+                    <a href="#features" class="btn-secondary">Learn More</a>
+                </div>
             </div>
-        </div>
-    </section>
-
-    <section id="features" class="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-500">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-4xl font-bold text-center text-gray-900 dark:text-white mb-16 transition-colors duration-500">Key Features</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl transition-colors duration-500">
-                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 transition-colors duration-500">
-                        <svg class="w-6 h-6 text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Collaborative Booking</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-500">Create or join group reservations. Share costs automatically with participants and optimize space usage.</p>
+            <div class="hero-right">
+                <div class="blob blob-blue"></div>
+                <div class="blob blob-yellow"></div>
+                <div class="circle circle-dark">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" width="36" height="36" alt="home">
                 </div>
-
-                <div class="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-700 rounded-xl transition-colors duration-500">
-                    <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4 transition-colors duration-500">
-                        <svg class="w-6 h-6 text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Points System</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-500">Internal currency for seamless transactions. Members get 50% discount on all reservations.</p>
+                <div class="circle circle-blue">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/conference-call.png" width="48" height="48" alt="group">
                 </div>
-
-                <div class="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-700 rounded-xl transition-colors duration-500">
-                    <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4 transition-colors duration-500">
-                        <svg class="w-6 h-6 text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Smart Analytics</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-500">Track user interest and optimize offerings. Real-time availability dashboard for better decisions.</p>
+                <div class="circle circle-yellow">
+                    <img src="https://img.icons8.com/ios-filled/50/0b1b3f/coins.png" width="28" height="28" alt="coins">
                 </div>
-
-                <div class="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-700 rounded-xl transition-colors duration-500">
-                    <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4 transition-colors duration-500">
-                        <svg class="w-6 h-6 text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Group Chat</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-500">Coordinate with participants through dedicated chat rooms for each reservation.</p>
+                <div class="stat-bubble stat-bubble-1">
+                    <div class="stat-num">500+</div>
+                    <div class="stat-lbl">Active Locals</div>
                 </div>
-
-                <div class="p-6 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 rounded-xl transition-colors duration-500">
-                    <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center mb-4 transition-colors duration-500">
-                        <svg class="w-6 h-6 text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Advanced Search</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-500">Filter by city, type, and capacity. Find the perfect space quickly and easily.</p>
-                </div>
-
-                <div class="p-6 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl transition-colors duration-500">
-                    <div class="w-12 h-12 bg-cyan-600 rounded-lg flex items-center justify-center mb-4 transition-colors duration-500">
-                        <svg class="w-6 h-6 text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Social Network</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-500">Build your network, add friends, and transfer points between users seamlessly.</p>
+                <div class="stat-bubble stat-bubble-2">
+                    <div class="stat-num">2k+</div>
+                    <div class="stat-lbl">Users</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-20 px-4 transition-colors duration-500">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-4xl font-bold text-center text-gray-900 dark:text-white mb-16 transition-colors duration-500">Who Can Use Smart Organizer?</h2>
-            <div class="grid md:grid-cols-4 gap-6">
-                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-500">
-                    <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-500">
-                        <svg class="w-8 h-8 text-red-600 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
+    <section id="features" class="section" style="background:#fff">
+        <div class="section-inner">
+            <div class="section-header">
+                <div class="section-tag">Features</div>
+                <h2 class="section-title"><span>Key</span> Features</h2>
+                <p class="section-sub">Everything you need to organize shared spaces efficiently</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div >
+                        <img src="https://img.icons8.com/ios-filled/50/3B6EF5/conference-call.png" width="22" height="22" alt="collaborative booking">
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Admin</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-500">Manage users and view analytics</p>
+                    <div class="feature-title">Collaborative Booking</div>
+                    <div class="feature-desc">Create or join group reservations. Share costs automatically with participants and optimize space usage.</div>
                 </div>
-
-                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-500">
-                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-500">
-                        <svg class="w-8 h-8 text-blue-600 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
+                <div class="feature-card">
+                    <div >
+                        <img src="https://img.icons8.com/ios-filled/50/22C55E/coins.png" width="22" height="22" alt="points">
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Tenant</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-500">Manage reservation offers</p>
+                    <div class="feature-title">Points System</div>
+                    <div class="feature-desc">Internal currency for seamless transactions. Members get 50% discount on all reservations.</div>
                 </div>
-
-                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-500">
-                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-500">
-                        <svg class="w-8 h-8 text-green-600 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+                <div class="feature-card">
+                    <div >
+                        <img src="https://img.icons8.com/ios-filled/50/8B5CF6/bar-chart.png" width="22" height="22" alt="analytics">
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Lessor</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-500">Join groups and book spaces</p>
+                    <div class="feature-title">Smart Analytics</div>
+                    <div class="feature-desc">Track user interest and optimize offerings. Real-time availability dashboard for better decisions.</div>
                 </div>
-
-                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-500">
-                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-500">
-                        <svg class="w-8 h-8 text-purple-600 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-                        </svg>
+                <div class="feature-card">
+                    <div>
+                        <img src="https://img.icons8.com/ios-filled/50/0B1B3F/chat.png" width="22" height="22" alt="chat">
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-500">Member</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-500">Get 50% discount on all bookings</p>
+                    <div class="feature-title">Group Chat</div>
+                    <div class="feature-desc">Coordinate with participants through dedicated chat rooms for each reservation.</div>
+                </div>
+                <div class="feature-card">
+                    <div >
+                        <img src="https://img.icons8.com/ios-filled/50/D97706/search.png" width="22" height="22" alt="search">
+                    </div>
+                    <div class="feature-title">Advanced Search</div>
+                    <div class="feature-desc">Filter by city, type, and capacity. Find the perfect space quickly and easily.</div>
+                </div>
+                <div class="feature-card">
+                    <div>
+                        <img src="https://img.icons8.com/ios-filled/50/06B6D4/user-group-man-man.png" width="22" height="22" alt="social">
+                    </div>
+                    <div class="feature-title">Social Network</div>
+                    <div class="feature-desc">Build your network, add friends, and transfer points between users seamlessly.</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-20 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 transition-colors duration-500">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl font-bold text-white mb-6 transition-colors duration-500">Ready to Start Organizing?</h2>
-            <p class="text-xl text-blue-100 mb-8 transition-colors duration-500">Join thousands of users who are already sharing locals and saving money.</p>
-            <a href="{{ route('register') }}" class="inline-block px-8 py-4 text-lg font-semibold text-blue-600 bg-white rounded-lg hover:bg-gray-100 transition-all duration-500 shadow-lg">
-                Create Free Account
-            </a>
+    <section id="roles" class="section">
+        <div class="section-inner">
+            <div class="section-header">
+                <div class="section-tag">Roles</div>
+                <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Who Can Use Smart Organizer?</h2>
+                <p class="section-sub">A platform built for every type of user</p>
+            </div>
+            <div class="roles-grid">
+                <div class="role-card">
+                    <div>
+                        <img src="https://img.icons8.com/ios-filled/50/EF4444/admin-settings-male.png" width="28" height="28" alt="admin">
+                    </div>
+                    <div class="role-name">Admin</div>
+                    <div class="role-desc">Manage users and view analytics</div>
+                </div>
+                <div class="role-card">
+                    <div >
+                        <img src="https://img.icons8.com/ios-filled/50/3B6EF5/home.png" width="28" height="28" alt="tenant">
+                    </div>
+                    <div class="role-name">Tenant</div>
+                    <div class="role-desc">Manage reservation offers</div>
+                </div>
+                <div class="role-card">
+                    <div >
+                        <img src="https://img.icons8.com/ios-filled/50/22C55E/user-male-circle.png" width="28" height="28" alt="lessor">
+                    </div>
+                    <div class="role-name">Lessor</div>
+                    <div class="role-desc">Join groups and book spaces</div>
+                </div>
+                <div class="role-card">
+                    <div >
+                        <img src="https://img.icons8.com/ios-filled/50/8B5CF6/star.png" width="28" height="28" alt="member">
+                    </div>
+                    <div class="role-name">Member</div>
+                    <div class="role-desc">Get 50% discount on all bookings</div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <footer class="bg-gray-900 text-gray-300 py-12 px-4 transition-colors duration-500">
-        <div class="max-w-7xl mx-auto text-center">
-            <div class="flex items-center justify-center space-x-2 mb-4">
-                <svg class="w-8 h-8 text-blue-500 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                </svg>
-                <span class="text-xl font-bold text-white transition-colors duration-500">Smart Organizer</span>
-            </div>
-            <p class="text-sm transition-colors duration-500">&copy; {{ date('Y') }} Smart Organizer. All rights reserved.</p>
-            <p class="text-sm mt-2 transition-colors duration-500">Share Locals. Split Costs. Organize Smartly.</p>
+    <section class="cta-section">
+        <div class="cta-inner">
+            <h2 class="cta-title">Ready to Start Organizing?</h2>
+            <p class="cta-sub">Join thousands of users who are already sharing locals and saving money.</p>
+            <a href="{{ route('register') }}" class="btn-cta">Create Free Account</a>
         </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">
+            <div class="logo-icon">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" width="16" height="16" alt="logo">
+            </div>
+            <span class="logo-text">Smart<span class="logo-dot">.</span>Organizer</span>
+        </div>
+        <p class="footer-text">&copy; {{ date('Y') }} Smart Organizer. All rights reserved.</p>
+        <p class="footer-text" style="margin-top:4px">Share Locals. Split Costs. Organize Smartly.</p>
     </footer>
+
+<script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const darkIcon    = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon   = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+        darkIcon.style.display = 'block';
+    } else {
+        lightIcon.style.display = 'block';
+    }
+
+    themeToggle.addEventListener('click', function () {
+        const current = localStorage.getItem('theme');
+        if (current === 'dark') {
+            localStorage.setItem('theme', 'light');
+            document.body.classList.remove('dark');
+            darkIcon.style.display = 'block';
+            lightIcon.style.display = 'none';
+        } else {
+            localStorage.setItem('theme', 'dark');
+            document.body.classList.add('dark');
+            lightIcon.style.display = 'block';
+            darkIcon.style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>
