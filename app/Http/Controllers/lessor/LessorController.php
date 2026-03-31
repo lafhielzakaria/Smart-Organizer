@@ -8,7 +8,7 @@ use App\Models\Participation;
 use App\Models\ViewsAnalytics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; 
 
 class LessorController extends Controller
 {
@@ -22,9 +22,9 @@ class LessorController extends Controller
         $availableOffers = LocalOffer::where('status', 'available')->get();
         $userCurrentParticipation = Participation::orderBy('created_at', 'desc')->where(['user_id' => $user->id])->first();
         if (!$ParticipationlocalOffer = LocalOffer::where('id', $userCurrentParticipation->local_offer_id, 'status', 'available')) {
-            $availableOffers = null;
+            $userCurrentParticipation = null;
         }
-        return view('lessor.dashboard', compact('availableOffers'));
+        return view('lessor.dashboard', compact('availableOffers' , 'userCurrentParticipation'));
     }
 
     /**
