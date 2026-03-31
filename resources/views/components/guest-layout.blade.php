@@ -1,49 +1,149 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Smart Organizer') }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; }
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        .auth-left {
+            width: 45%;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 48px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .auth-left::before {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: #333333;
+            border-radius: 50%;
+            top: -100px; left: -100px;
+            opacity: .15;
+        }
+        .auth-left::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: #555555;
+            border-radius: 50%;
+            bottom: -80px; right: -80px;
+            opacity: .12;
+        }
+        .auth-left-content { position: relative; z-index: 1; text-align: center; }
+        .auth-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 48px; text-decoration: none; }
+        .auth-logo-icon { width: 44px; height: 44px; background: #333333; border: 2px solid #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .auth-logo-text { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .auth-logo-dot { color: #fff; }
+        .auth-left h2 { font-size: 32px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 16px; }
+        .auth-left p { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.7; max-width: 320px; }
+        .auth-features { margin-top: 48px; display: flex; flex-direction: column; gap: 16px; text-align: left; }
+        .auth-feature { display: flex; align-items: center; gap: 12px; }
+        .auth-feature-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; flex-shrink: 0; }
+        .auth-feature span { font-size: 14px; color: rgba(255,255,255,0.7); }
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        .auth-right {
+            flex: 1;
+            background: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 48px;
+            overflow-y: auto;
+        }
+        .auth-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .auth-card h1 { font-size: 26px; font-weight: 800; color: #111111; margin-bottom: 6px; }
+        .auth-card .auth-sub { font-size: 14px; color: #8892A4; margin-bottom: 28px; }
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script>
-            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            }
-        </script>
-    </head>
-    <body class="font-sans text-gray-900 dark:text-gray-100 antialiased bg-gray-100 dark:bg-gray-900 transition-colors duration-500">
-        <div class="flex flex-col sm:justify-center items-center py-12">
-            <!-- Dark Mode Toggle -->
-            <div class="absolute top-4 right-4">
-                <button id="theme-toggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-500">
-                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-gray-800 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                    </svg>
-                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-gray-800 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-            </div>
+        .auth-card label { display: block; font-size: 13px; font-weight: 600; color: #111111; margin-bottom: 6px; }
+        .auth-card input, .auth-card select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #111111;
+            background: #F5F5F5;
+            outline: none;
+            transition: border-color .2s;
+            margin-bottom: 18px;
+        }
+        .auth-card input:focus, .auth-card select:focus { border-color: #111111; background: #fff; }
+        .auth-card .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: #111111;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity .2s;
+            margin-top: 4px;
+        }
+        .auth-card .btn-submit:hover { opacity: .85; }
+        .auth-card .auth-footer { text-align: center; margin-top: 20px; font-size: 13px; color: #8892A4; }
+        .auth-card .auth-footer a { color: #111111; font-weight: 600; text-decoration: none; }
+        .auth-card .auth-footer a:hover { text-decoration: underline; }
+        .auth-back { font-size: 13px; color: #111111; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 24px; }
+        .auth-back:hover { color: #555555; }
+        .auth-remember { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .auth-remember label { font-size: 13px; color: #8892A4; font-weight: 400; margin: 0; display: flex; align-items: center; gap: 6px; }
+        .auth-remember a { font-size: 13px; color: #111111; text-decoration: none; }
+        .auth-remember a:hover { text-decoration: underline; }
 
-            <div>
-                <a href="/">
-                    <div class="h-16 w-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                    </div>
-                </a>
-            </div>
-
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg transition-colors duration-500">
-                {{ $slot }}
+        @media (max-width: 768px) {
+            .auth-left { display: none; }
+            .auth-right { padding: 32px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-left">
+        <div class="auth-left-content">
+            <a href="/" class="auth-logo">
+                <div class="auth-logo-icon">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" width="22" height="22" alt="logo">
+                </div>
+                <span class="auth-logo-text">Smart<span class="auth-logo-dot">.</span>Organizer</span>
+            </a>
+            <h2>Organize Shared<br>Spaces Smartly</h2>
+            <p>Book sports fields, study rooms, and coworking spaces collaboratively. Split costs fairly.</p>
+            <div class="auth-features">
+                <div class="auth-feature"><div class="auth-feature-dot"></div><span>Collaborative group bookings</span></div>
+                <div class="auth-feature"><div class="auth-feature-dot"></div><span>Points system with 50% member discount</span></div>
+                <div class="auth-feature"><div class="auth-feature-dot"></div><span>Real-time availability & analytics</span></div>
+                <div class="auth-feature"><div class="auth-feature-dot"></div><span>Built-in group chat per reservation</span></div>
             </div>
         </div>
-    </body>
+    </div>
+
+    <div class="auth-right">
+        <div class="auth-card">
+            {{ $slot }}
+        </div>
+    </div>
+</body>
 </html>
