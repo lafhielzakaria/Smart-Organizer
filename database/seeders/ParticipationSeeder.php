@@ -12,7 +12,7 @@ class ParticipationSeeder extends Seeder
     public function run(): void
     {
         $offers = LocalOffer::where('status', 'available')->get();
-        $users = User::all();
+        $users = User::where('role_id', 3)->get();
         
         foreach ($offers as $offer) {
             for ($i = 0; $i < rand(1, 5); $i++) {

@@ -1,15 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\lessor;
-
 use App\Http\Controllers\Controller;
+use App\Models\ChatRoom;
 use App\Models\LocalOffer;
 use App\Models\Participation;
 use App\Models\ViewsAnalytics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth; 
-
 class LessorController extends Controller
 {
     /**
@@ -20,11 +18,11 @@ class LessorController extends Controller
         //
         $user = Auth::user();
         $availableOffers = LocalOffer::where('status', 'available')->get();
-        $userCurrentParticipation = Participation::orderBy('created_at', 'desc')->where(['user_id' => $user->id])->first();
-        if (!$ParticipationlocalOffer = LocalOffer::where('id', $userCurrentParticipation->local_offer_id, 'status', 'available')) {
-            $userCurrentParticipation = null;
-        }
-        return view('lessor.dashboard', compact('availableOffers' , 'userCurrentParticipation'));
+        $userCurrentParticipation = Participation::orderBy('created_at', 'desc')->where('user_id', $user->id)->whereNull('leftAt')->first();
+        $chatRoom = $userCurrentParticipation
+            ? ChatRoom::firstOrCreate(['local_offer_id' => $userCurrentParticipation->local_offer_id])
+            : null;
+        return view('lessor.dashboard', compact('availableOffers', 'userCurrentParticipation', 'user', 'chatRoom'));
     }
 
     /**

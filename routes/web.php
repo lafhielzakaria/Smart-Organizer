@@ -7,25 +7,18 @@ use App\Http\Controllers\Tenant\LocalOfferController;
 use App\Http\Controllers\Tenant\LocalController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\lessor\LessorController;
-
 Route::get('/', function () {
     return view('welcome');
 });
-
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
-
 Route::post('/login', [AuthController::class, 'login']);
-
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
-
 Route::post('/register', [AuthController::class, 'register']);
-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 Route::middleware('auth')->group(function () {
     Route::get('/tenant/dashboard', [TenantDashboardController::class, 'index'])->name('tenant.dashboard');
     Route::post('/tenant/locals', [LocalController::class, 'store'])->name('tenant.locals.store');

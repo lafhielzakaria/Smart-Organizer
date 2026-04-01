@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             LocalOfferSeeder::class,
             ChatRoomSeeder::class,
             ParticipationSeeder::class,
+            SharedOfferSeeder::class,
             MessageSeeder::class,
             ViewsAnalyticsSeeder::class,
         ]);
