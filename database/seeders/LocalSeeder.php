@@ -22,6 +22,7 @@ class LocalSeeder extends Seeder
                     'capacity' => fake()->numberBetween(20, 200),
                     'city' => fake()->randomElement($cities),
                     'andreas' => fake()->streetAddress(),
+                    'description' => fake()->sentence(12),
                     'price' => fake()->numberBetween(50, 500),
                     'status' => fake()->randomElement(['active', 'blocked']),
                 ]);

@@ -17,12 +17,15 @@ class LessorController extends Controller
     {
         //
         $user = Auth::user();
-        $availableOffers = LocalOffer::where('status', 'available')->get();
+        $availableOffers = LocalOffer::with('local')->where('status', 'available')->get();
         $userCurrentParticipation = Participation::orderBy('created_at', 'desc')->where('user_id', $user->id)->whereNull('leftAt')->first();
         $chatRoom = $userCurrentParticipation
             ? ChatRoom::firstOrCreate(['local_offer_id' => $userCurrentParticipation->local_offer_id])
             : null;
-        return view('lessor.dashboard', compact('availableOffers', 'userCurrentParticipation', 'user', 'chatRoom'));
+        $participantsCount = $userCurrentParticipation
+            ? Participation::where('local_offer_id', $userCurrentParticipation->local_offer_id)->whereNull('leftAt')->count()
+            : 0;
+        return view('lessor.dashboard', compact('availableOffers', 'userCurrentParticipation', 'user', 'chatRoom', 'participantsCount'));
     }
 
     /**

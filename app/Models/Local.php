@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Local extends Model
 {
-    protected $fillable = ['creator_id', 'name', 'type', 'capacity', 'city', 'andreas', 'price', 'status'];
+    protected $fillable = ['creator_id', 'name', 'type', 'capacity', 'city', 'andreas', 'price', 'status', 'description'];
 
     public function creator()
     {
