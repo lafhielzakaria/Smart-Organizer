@@ -3,14 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const messagesDiv = document.getElementById('chat-messages');
     const input = document.getElementById('message-input');
     const btn = document.getElementById('send-btn');
-
     if (!chatRoomId || !messagesDiv) return;
-
     let socket;
-
     function connect() {
         socket = new WebSocket('ws://localhost:8080');
-
         socket.onopen = () => {
             socket.send(JSON.stringify({
                 type: 'join',
@@ -19,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 sender_name: currentUserName,
             }));
         };
-
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.type === 'history') data.messages.forEach(appendMessage);
@@ -29,9 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.onclose = () => setTimeout(connect, 3000);
         socket.onerror = () => socket.close();
     }
-
     connect();
-
     function appendMessage(msg) {
         const isMine = Number(msg.sender_id) === Number(currentUserId);
         const name = isMine ? 'You' : (msg.sender_name ?? 'Unknown');
@@ -47,14 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
         messagesDiv.appendChild(row);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
-
     function sendMessage() {
         const content = input.value.trim();
         if (!content || socket.readyState !== WebSocket.OPEN) return;
         input.value = '';
         socket.send(JSON.stringify({ type: 'message', chat_room_id: chatRoomId, content }));
     }
-
     btn.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
 });
