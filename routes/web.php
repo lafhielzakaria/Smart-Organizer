@@ -6,7 +6,9 @@ use App\Http\Controllers\Tenant\DashboardController as TenantDashboardController
 use App\Http\Controllers\Tenant\LocalOfferController;
 use App\Http\Controllers\Tenant\LocalController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\lessor\FriendShipsController;
 use App\Http\Controllers\lessor\LessorController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -31,4 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/lessor/dashboard', [LessorController::class, 'index'])->name('lessor.dashboard');
     Route::get('/lessor/apply/{availableOffer}', [LessorController::class, 'apply'])->name('lessor.apply');
     Route::get('/offer/details/{availableOffer}', [LessorController::class, 'viewDetails'])->name('offer.details');
+    Route::get('/search-users', [FriendShipsController::class, 'searchUsers'])->name('users.search');
+    Route::post('/send-friend-request', [FriendShipsController::class, 'sendFriendRequest'])->name('friendships.send');
+    Route::get('/search-accepted-friends', [FriendShipsController::class, 'searchAcceptedFriends'])->name('friends.accepted.search');
+    Route::post('/accept-friend-request', [FriendShipsController::class, 'acceptFriendRequest'])->name('friendships.accept');
+    Route::post('/send-invite', [FriendShipsController::class, 'sendInvite'])->name('invites.send');
+    Route::get('/accept-invite/{localOfferId}/{userId}', [FriendShipsController::class, 'acceptInvite'])->middleware('signed')->name('invites.accept');
 });

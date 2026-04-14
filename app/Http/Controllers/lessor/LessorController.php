@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChatRoom;
 use App\Models\LocalOffer;
 use App\Models\Participation;
+use App\Models\Friendship;
 use App\Models\ViewsAnalytics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -15,17 +16,35 @@ class LessorController extends Controller
      */
     public function index()
     {
-        //
         $user = Auth::user();
-        $availableOffers = LocalOffer::with('local')->where('status', 'available')->get();
         $userCurrentParticipation = Participation::orderBy('created_at', 'desc')->where('user_id', $user->id)->whereNull('leftAt')->first();
+        
+        $currentLocalOffer = null;
+        $participantsCount = 0;
+        $participants = [];
+        
+        if ($userCurrentParticipation) {
+            $currentLocalOffer = LocalOffer::with('local')->find($userCurrentParticipation->local_offer_id);
+            $participantRecords = Participation::with('user')->where('local_offer_id', $userCurrentParticipation->local_offer_id)->whereNull('leftAt')->get();
+            $participantsCount = $participantRecords->count();
+            $participants = $participantRecords->map(function($p) {
+                return [
+                    'id' => $p->user->id,
+                    'name' => $p->user->name,
+                    'email' => $p->user->email
+                ];
+            });
+        }
+        
+        $availableOffers = $userCurrentParticipation ? [] : LocalOffer::with('local')->where('status', 'available')->get();
+        
         $chatRoom = $userCurrentParticipation
             ? ChatRoom::firstOrCreate(['local_offer_id' => $userCurrentParticipation->local_offer_id])
             : null;
-        $participantsCount = $userCurrentParticipation
-            ? Participation::where('local_offer_id', $userCurrentParticipation->local_offer_id)->whereNull('leftAt')->count()
-            : 0;
-        return view('lessor.dashboard', compact('availableOffers', 'userCurrentParticipation', 'user', 'chatRoom', 'participantsCount'));
+        
+        $pendingRequests = Friendship::with('sender')->where('receiver_id', $user->id)->where('status', 'pending')->get();
+        
+        return view('lessor.dashboard', compact('availableOffers', 'userCurrentParticipation', 'user', 'chatRoom', 'participantsCount', 'currentLocalOffer', 'participants', 'pendingRequests'));
     }
 
     /**
@@ -46,15 +65,20 @@ class LessorController extends Controller
     public function apply(Request $request, LocalOffer $availableOffer)
     {
         $user = Auth::user();
-        if ($userCurrentParticipation = Participation::orderBy('created_at', 'desc')->where(['user_id' => $user->id])->first()) {
-            if ($userCurrentParticipation->localOffer->status == 'available') {
-                session()->flash('participationError', 'Your participation is still in an available local.');
-                return Redirect('lessor/dashboard');
-            }
+        
+        // Check if user has an active participation (not left yet)
+        $activeParticipation = Participation::where('user_id', $user->id)
+            ->whereNull('leftAt')
+            ->first();
+        
+        if ($activeParticipation) {
+            session()->flash('participationError', 'You are already participating in another local offer. You can only join one offer at a time.');
+            return Redirect('lessor/dashboard');
         }
+
         $currentParticipations = Participation::where(['local_offer_id' => $availableOffer->id])->count() + 1;
         $priceToJoin = $availableOffer->totalPrice / $currentParticipations;
-        var_dump($priceToJoin);
+        
         Participation::create([
             'sharePrice' => $priceToJoin,
             'local_offer_id' => $availableOffer->id,

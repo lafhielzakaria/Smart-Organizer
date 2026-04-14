@@ -1,5 +1,5 @@
-const { WebSocketServer } = require('ws');
-const mysql = require('mysql2/promise');
+import { WebSocketServer } from 'ws';
+import mysql from 'mysql2/promise';
 
 const db = mysql.createPool({
     host: '127.0.0.1',
@@ -38,8 +38,12 @@ wss.on('connection', (ws) => {
 
             const [messages] = await db.query(
                 `SELECT m.id, m.content, m.sender_id, m.created_at, u.name as sender_name
-                 FROM messages m JOIN users u ON u.id = m.sender_id
-                 WHERE m.chat_room_id = ? ORDER BY m.id ASC`,
+                 FROM messages m 
+                 JOIN users u ON u.id = m.sender_id
+                 JOIN chat_rooms cr ON cr.id = m.chat_room_id
+                 JOIN participations p ON p.local_offer_id = cr.local_offer_id AND p.user_id = m.sender_id AND p.leftAt IS NULL
+                 WHERE m.chat_room_id = ? 
+                 ORDER BY m.id ASC`,
                 [ws.chatRoomId]
             );
             ws.send(JSON.stringify({ type: 'history', messages }));
