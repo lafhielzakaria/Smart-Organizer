@@ -1,293 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Smart Organizer</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<script src="../../js/tenant.js"></script>
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
-    <div class="min-h-screen">
-
-        <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-500">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16 items-center">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                            <img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" width="18" height="18" alt="logo">
-                        </div>
-                        <span class="text-xl font-bold text-gray-900 dark:text-white">Smart Organizer</span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <button id="theme-toggle" style="background:#F5F6FA;border:none;border-radius:10px;padding:8px;cursor:pointer !important;display:flex;align-items:center;justify-content:center;min-width:38px;min-height:38px;">
-                            <img id="theme-toggle-dark-icon" src="https://img.icons8.com/fluency/48/moon-symbol.png" width="22" height="22" alt="dark" class="hidden">
-                            <img id="theme-toggle-light-icon" src="https://img.icons8.com/ios-filled/50/0b1b3f/sun.png" width="18" height="18" alt="light" class="hidden">
-                        </button>
-                        <form method="POST" action="/logout">
-                            @csrf
-                            <button type="submit" class="text-sm text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-500">Logout</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-            <div class="mb-8 flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome back, {{ $user->name }}</h1>
-                    <p class="text-gray-500 dark:text-gray-400 mt-1">Here's an overview of your locals and offers</p>
-                </div>
-                <button id="open-local-modal-btn" class="px-4 py-2 bg-black text-white text-sm font-semibold rounded-lg hover:opacity-75 transition">+ Create Local</button>
-            </div>
-
-            @if(session('success'))
-            <div class="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <p class="text-sm text-gray-800 dark:text-gray-200">{{ session('success') }}</p>
-            </div>
-            @endif
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-colors duration-500">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">My Locals</p>
-                            <p class="text-4xl font-bold text-gray-900 dark:text-white mt-2">{{ $myLocals->count() }}</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">properties</p>
-                        </div>
-                        <div class="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                            <svg class="w-7 h-7 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-colors duration-500">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Offers</p>
-                            <p class="text-4xl font-bold text-gray-900 dark:text-white mt-2">{{ $activeOffers }}</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">of {{ $totalOffers }} total</p>
-                        </div>
-                        <div class="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                            <svg class="w-7 h-7 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-colors duration-500">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Participants</p>
-                            <p class="text-4xl font-bold text-gray-900 dark:text-white mt-2">{{ $totalParticipants }}</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">across all offers</p>
-                        </div>
-                        <div class="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                            <svg class="w-7 h-7 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md transition-colors duration-500 mb-8">
-                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Locals View Time</h3>
-                    <button id="toggle-view-btn" onclick="toggleViewAll()" class="text-xs font-medium text-gray-800 dark:text-gray-200 hover:underline">View All</button>
-                </div>
-                <div class="p-6 space-y-4" id="locals-view-time">
-                    @forelse($topLocals as $item)
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $item['name'] }}</span>
-                        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $item['total_view_time'] }}</span>
-                    </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
-                        <div class="bg-black dark:bg-white h-1.5 rounded-full" style="width: {{ $allLocals->first() && $allLocals->first()['total_view_time'] > 0 ? round(($item['total_view_time'] / $allLocals->first()['total_view_time']) * 100) : 0 }}%"></div>
-                    </div>
-                    @empty
-                    <p class="text-sm text-gray-400 dark:text-gray-500">No view data available.</p>
-                    @endforelse
-                </div>
-                <div class="px-6 pb-6 space-y-4 hidden" id="locals-view-all">
-                    @foreach($allLocals as $item)
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $item['name'] }}</span>
-                        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $item['total_view_time'] }}</span>
-                    </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
-                        <div class="bg-black dark:bg-white h-1.5 rounded-full" style="width: {{ $allLocals->first() && $allLocals->first()['total_view_time'] > 0 ? round(($item['total_view_time'] / $allLocals->first()['total_view_time']) * 100) : 0 }}%"></div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md transition-colors duration-500 mb-8">
-                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">My Locals</h3>
-                </div>
-                @forelse($myLocals as $local)
-                <div class="p-6 {{ !$loop->last ? 'border-b border-gray-200 dark:border-gray-700' : '' }}">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="text-base font-semibold text-gray-900 dark:text-white">{{ $local->name }}</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                                {{ $local->city }} &bull; {{ ucfirst($local->type) }} &bull; Capacity: {{ $local->capacity }} &bull; {{ $local->price }} pts
-                            </p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2.5 py-1 text-xs font-medium rounded-full {{ $local->status === 'active' ? 'bg-black text-white' : 'bg-gray-200 text-gray-800' }}">
-                                {{ ucfirst($local->status) }}
-                            </span>
-                            <span class="text-xs text-gray-400 dark:text-gray-500">{{ $local->local_offers_count }} offer(s)</span>
-                        </div>
-                    </div>
-                </div>
-                @empty
-                <div class="p-16 text-center">
-                    <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path>
-                    </svg>
-                    <p class="text-gray-500 dark:text-gray-400 font-medium">You have no locals yet</p>
-                </div>
-                @endforelse
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md transition-colors duration-500">
-                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">My Offers</h3>
-                    @if($myLocals->count() > 0)
-                    <button id="open-modal-btn" class="px-3 py-1.5 text-xs font-medium bg-black hover:opacity-75 text-white rounded-lg transition-colors duration-200">+ Create Offer</button>
-                    @endif
-                </div>
-                @php $allOffers = $myLocals->flatMap(fn($l) => $l->localOffers->each(fn($o) => $o->localName = $l->name)); @endphp
-                @if($allOffers->count() > 0)
-                <div class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    @foreach($allOffers as $offer)
-                    <div class="bg-gray-50 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                        <div class="flex items-start justify-between mb-2">
-                            <div>
-                                <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 mb-0.5">{{ $offer->localName }}</p>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $offer->startTime->format('d M Y') }}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $offer->startTime->format('H:i') }} → {{ $offer->endTime->format('H:i') }}</p>
-                            </div>
-                            <span class="px-2 py-0.5 text-xs font-medium rounded-full {{ $offer->status === 'available' ? 'bg-black text-white' : 'bg-gray-200 text-gray-800' }}">{{ ucfirst($offer->status) }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-3">
-                            <span>{{ $offer->totalPrice }} pts</span>
-                            <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $offer->participations->count() }} / {{ $offer->maxParticipants }}</span>
-                        </div>
-                        <div class="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
-                            <div class="bg-black dark:bg-white h-1.5 rounded-full" style="width: {{ $offer->maxParticipants > 0 ? round(($offer->participations->count() / $offer->maxParticipants) * 100) : 0 }}%"></div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @else
-                <div class="p-16 text-center">
-                    <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p class="text-gray-500 dark:text-gray-400 font-medium">No offers yet</p>
-                </div>
-                @endif
-            </div>
-
-        </div>
-    </div>
-
-    <div id="local-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(0,0,0,0.5)">
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:28rem;max-height:90vh;overflow-y:auto" class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6">
-            <div class="flex items-center justify-between mb-5">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Create Local</h3>
-                <button id="close-local-modal-btn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none">&times;</button>
-            </div>
-            <form method="POST" action="{{ route('tenant.locals.store') }}" class="space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-                    <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
-                    <select name="type" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                        <option value="">Select type</option>
-                        <option value="sports">Sports Field</option>
-                        <option value="study">Study Room</option>
-                        <option value="coworking">Coworking Space</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">City</label>
-                    <input type="text" name="city" value="{{ old('city') }}" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
-                    <input type="text" name="andreas" value="{{ old('andreas') }}" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                </div>
-                <div>
-                </div>
-                <div>
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-black hover:opacity-75 text-white font-semibold rounded-lg transition">Create Local</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="offer-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(0,0,0,0.5)">
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:28rem;max-height:90vh;overflow-y:auto" class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6">
-            <div class="flex items-center justify-between mb-5">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">New Offer</h3>
-                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none">&times;</button>
-            </div>
-
-            @if($errors->any())
-            <div class="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                @foreach($errors->all() as $error)
-                <p class="text-sm text-gray-800 dark:text-gray-200">{{ $error }}</p>
-                @endforeach
-            </div>
-            @endif
-
-            <form id="offer-form" method="POST" action="" class="space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Local</label>
-                    <select id="local-select" name="local_id" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                        @foreach($myLocals as $local)
-                        <option value="{{ $local->id }}">{{ $local->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
-                    <input type="datetime-local" name="startTime" value="{{ old('startTime') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Time</label>
-                    <input type="datetime-local" name="endTime" value="{{ old('endTime') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Price (pts)</label>
-                    <input type="number" name="totalPrice" value="{{ old('totalPrice') }}" min="1" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Participants</label>
-                    <input type="number" name="maxParticipants" value="{{ old('maxParticipants') }}" min="1" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black">
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-black hover:opacity-75 text-white font-semibold rounded-lg transition-colors duration-200">Create Offer</button>
-            </form>
-        </div>
-    </div>
-
-   
-</body>
-
-</html>
+@extends('layouts.app')
+@section('title', 'Tenant Dashboard')
+@section('head')
+<link href="https://fonts.bunny.net/css?family=antonio:400,500,600,700&family=barlow-condensed:400,500,600,700,800,900&family=barlow:400,500,600" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-bright:#F0C040;--gold-dim:rgba(201,168,76,0.12);--gold-line:rgba(201,168,76,0.35);--black:#060608;--dark:#0D0D10;--panel:#12121A;--panel2:#1A1A26;--white:#FFFFFF;--muted:rgba(255,255,255,0.38);--green:#00C853}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--black)}.dashboard-page{min-height:calc(100vh - 65px);background:var(--black);font-family:'Barlow Condensed',sans-serif;position:relative;overflow:hidden}.beams{position:fixed;top:-10%;left:50%;transform:translateX(-50%);width:120%;height:80vh;pointer-events:none;z-index:0}.beam{position:absolute;top:0;transform-origin:top center;opacity:0;animation:beamSweep 8s infinite ease-in-out}.beam::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:70vh;background:linear-gradient(180deg,rgba(201,168,76,0.18) 0%,transparent 75%);clip-path:polygon(50% 0%,100% 100%,0% 100%)}.beam:nth-child(1){left:18%;animation-delay:0s;animation-duration:7s}.beam:nth-child(2){left:33%;animation-delay:1.5s;animation-duration:9s}.beam:nth-child(3){left:50%;animation-delay:0.8s;animation-duration:8s}.beam:nth-child(4){left:67%;animation-delay:2.2s;animation-duration:7.5s}.beam:nth-child(5){left:82%;animation-delay:0.4s;animation-duration:10s}@keyframes beamSweep{0%{opacity:0;transform:rotate(-18deg)}20%{opacity:1}50%{opacity:0.55;transform:rotate(18deg)}80%{opacity:1}100%{opacity:0;transform:rotate(-18deg)}}.stripe-bg{position:fixed;inset:0;background-image:repeating-linear-gradient(-55deg,transparent,transparent 40px,rgba(201,168,76,0.018) 40px,rgba(201,168,76,0.018) 41px);pointer-events:none;z-index:0}.dashboard-inner{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:52px 28px 100px}.dash-header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:40px;animation:revealUp 0.7s ease both}.hdr-line{height:1px;background:linear-gradient(90deg,transparent,var(--gold-line))}.hdr-line.r{background:linear-gradient(90deg,var(--gold-line),transparent)}.hdr-center{text-align:center;padding:0 36px}.hdr-eyebrow{display:block;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.hdr-title{font-family:'Antonio',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:-1px;line-height:1}.hdr-title span{color:var(--gold-bright)}.action-bar{display:flex;gap:10px;margin-bottom:32px;animation:revealUp 0.7s 0.1s ease both}.btn-gold{padding:10px 18px;background:var(--gold);color:#000;border:none;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.25s}.btn-gold:hover{background:var(--gold-bright);box-shadow:0 4px 20px rgba(201,168,76,0.3)}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;animation:revealUp 0.6s 0.2s ease both}.stat-card{background:var(--panel);border:1px solid rgba(255,255,255,0.07);border-radius:3px;padding:24px;transition:all 0.3s}.stat-card:hover{border-color:var(--gold-line);transform:translateY(-4px)}.stat-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}.stat-value{font-family:'Antonio',sans-serif;font-size:42px;font-weight:700;color:var(--white);line-height:1;margin-bottom:8px}.stat-desc{font-size:11px;color:var(--muted)}.card{background:var(--panel);border:1px solid rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;animation:revealUp 0.6s 0.3s ease both;transition:border-color 0.3s;margin-bottom:20px}.card:hover{border-color:var(--gold-line)}.card-header{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between}.card-header h2{font-family:'Antonio',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--white);margin:0}.card-badge{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold)}.card-body{padding:20px}.local-item{padding:20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;transition:all 0.2s}.local-item:last-child{border-bottom:none}.local-item:hover{background:var(--gold-dim)}.local-info h4{font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px}.local-info p{font-size:12px;color:var(--muted)}.local-meta{display:flex;align-items:center;gap:12px}.status-badge{padding:6px 12px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:3px;background:var(--gold);color:#000}.status-badge.inactive{background:rgba(255,255,255,0.1);color:var(--muted)}.offers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:20px}.offer-card{background:var(--panel2);border:1px solid rgba(255,255,255,0.07);border-radius:3px;padding:16px;transition:all 0.25s}.offer-card:hover{border-color:var(--gold);transform:translateY(-4px)}.offer-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:12px}.offer-local{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold);text-transform:uppercase}.offer-status{padding:4px 8px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:2px;background:var(--gold);color:#000}.offer-status.completed{background:rgba(255,255,255,0.1);color:var(--muted)}.offer-date{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px}.offer-time{font-size:11px;color:var(--muted);margin-bottom:12px}.offer-footer{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.05)}.offer-price{color:var(--gold-bright);font-weight:700}.offer-participants{color:var(--white);font-weight:600}.progress-bar{width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;margin-top:8px}.progress-fill{height:100%;background:var(--gold);transition:width 0.3s}.empty-state{padding:60px 20px;text-align:center}.empty-icon{width:60px;height:60px;margin:0 auto 16px;opacity:0.3}.empty-text{font-size:14px;color:var(--muted)}.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}.modal-content{background:var(--panel);border:1px solid var(--gold-line);border-radius:3px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto;animation:modalPop 0.3s ease}@keyframes modalPop{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}.modal-header{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between}.modal-header h3{font-family:'Antonio',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--white);margin:0}.modal-body{padding:20px}.modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--muted);transition:color 0.2s}.modal-close:hover{color:var(--gold)}.form-group{margin-bottom:20px}.form-label{display:block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}.form-input,.form-select{width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,0.14);border-radius:3px;outline:none;font-size:13px;background:var(--panel2);color:var(--white);font-family:'Barlow Condensed',sans-serif;transition:all 0.2s}.form-input:focus,.form-select:focus{border-color:var(--gold)}.btn-submit{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:3px;font-family:'Antonio',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s}.btn-submit:hover{background:var(--gold-bright);box-shadow:0 6px 30px rgba(201,168,76,0.35)}@keyframes revealUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}@media (max-width:900px){.stats-grid{grid-template-columns:1fr}.offers-grid{grid-template-columns:1fr}.dash-header{grid-template-columns:1fr}.hdr-line{display:none}}
+</style>
+@endsection
+@section('content')
+<div class="dashboard-page">
+<div class="beams"><div class="beam"></div><div class="beam"></div><div class="beam"></div><div class="beam"></div><div class="beam"></div></div>
+<div class="stripe-bg"></div>
+<div class="dashboard-inner">
+<div class="dash-header"><div class="hdr-line"></div><div class="hdr-center"><span class="hdr-eyebrow">Smart Organizer</span><div class="hdr-title">Tenant <span>Dashboard</span></div></div><div class="hdr-line r"></div></div>
+<div class="action-bar"><button type="button" onclick="openModal('local-modal')" class="btn-gold">+ Create Local</button><button type="button" onclick="openModal('offer-modal')" class="btn-gold">+ Create Offer</button></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-label">My Locals</div><div class="stat-value">{{ $myLocals->count() }}</div><div class="stat-desc">properties</div></div>
+<div class="stat-card"><div class="stat-label">Active Offers</div><div class="stat-value">{{ $activeOffers }}</div><div class="stat-desc">of {{ $totalOffers }} total</div></div>
+<div class="stat-card"><div class="stat-label">Total Participants</div><div class="stat-value">{{ $totalParticipants }}</div><div class="stat-desc">across all offers</div></div>
+</div>
+<div class="card">
+<div class="card-header"><h2>My Locals</h2><span class="card-badge">{{ $myLocals->count() }} total</span></div>
+@forelse($myLocals as $local)
+<div class="local-item">
+<div class="local-info"><h4>{{ $local->name }}</h4><p>{{ $local->city }} • {{ ucfirst($local->type) }} • Capacity: {{ $local->capacity }} • {{ $local->price }} pts</p></div>
+<div class="local-meta"><span class="status-badge {{ $local->status === 'active' ? '' : 'inactive' }}">{{ ucfirst($local->status) }}</span><span style="font-size:11px;color:var(--muted)">{{ $local->local_offers_count }} offer(s)</span></div>
+</div>
+@empty
+<div class="empty-state"><div class="empty-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path></svg></div><p class="empty-text">You have no locals yet</p></div>
+@endforelse
+</div>
+<div class="card">
+<div class="card-header"><h2>My Offers</h2><span class="card-badge">{{ $totalOffers }} total</span></div>
+@php $allOffers = $myLocals->flatMap(fn($l) => $l->localOffers->each(fn($o) => $o->localName = $l->name)); @endphp
+@if($allOffers->count() > 0)
+<div class="offers-grid">
+@foreach($allOffers as $offer)
+<div class="offer-card">
+<div class="offer-header"><span class="offer-local">{{ $offer->localName }}</span><span class="offer-status {{ $offer->status === 'available' ? '' : 'completed' }}">{{ ucfirst($offer->status) }}</span></div>
+<div class="offer-date">{{ $offer->startTime->format('d M Y') }}</div>
+<div class="offer-time">{{ $offer->startTime->format('H:i') }} → {{ $offer->endTime->format('H:i') }}</div>
+<div class="offer-footer"><span class="offer-price">{{ $offer->totalPrice }} pts</span><span class="offer-participants">{{ $offer->participations->count() }} / {{ $offer->maxParticipants }}</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:{{ $offer->maxParticipants > 0 ? round(($offer->participations->count() / $offer->maxParticipants) * 100) : 0 }}%"></div></div>
+</div>
+@endforeach
+</div>
+@else
+<div class="empty-state"><div class="empty-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div><p class="empty-text">No offers yet</p></div>
+@endif
+</div>
+</div>
+</div>
+<div id="local-modal" class="modal-overlay">
+<div class="modal-content">
+<div class="modal-header"><h3>Create Local</h3><button onclick="closeModal('local-modal')" class="modal-close">&times;</button></div>
+<div class="modal-body">
+<form method="POST" action="{{ route('tenant.locals.store') }}">
+@csrf
+<div class="form-group"><label class="form-label">Name</label><input type="text" name="name" class="form-input" required></div>
+<div class="form-group"><label class="form-label">Type</label><select name="type" class="form-select" required><option value="">Select type</option><option value="sports">Sports Field</option><option value="study">Study Room</option><option value="coworking">Coworking Space</option><option value="other">Other</option></select></div>
+<div class="form-group"><label class="form-label">City</label><input type="text" name="city" class="form-input" required></div>
+<div class="form-group"><label class="form-label">Address</label><input type="text" name="andreas" class="form-input" required></div>
+<button type="submit" class="btn-submit">Create Local</button>
+</form>
+</div>
+</div>
+</div>
+<div id="offer-modal" class="modal-overlay">
+<div class="modal-content">
+<div class="modal-header"><h3>Create Offer</h3><button onclick="closeModal('offer-modal')" class="modal-close">&times;</button></div>
+<div class="modal-body">
+<form method="POST" action="">
+@csrf
+<div class="form-group"><label class="form-label">Local</label><select name="local_id" class="form-select">@foreach($myLocals as $local)<option value="{{ $local->id }}">{{ $local->name }}</option>@endforeach</select></div>
+<div class="form-group"><label class="form-label">Start Time</label><input type="datetime-local" name="startTime" class="form-input"></div>
+<div class="form-group"><label class="form-label">End Time</label><input type="datetime-local" name="endTime" class="form-input"></div>
+<div class="form-group"><label class="form-label">Total Price (pts)</label><input type="number" name="totalPrice" class="form-input" min="1"></div>
+<div class="form-group"><label class="form-label">Max Participants</label><input type="number" name="maxParticipants" class="form-input" min="1"></div>
+<button type="submit" class="btn-submit">Create Offer</button>
+</form>
+</div>
+</div>
+</div>
+<script>
+function openModal(id){document.getElementById(id).style.display='flex'}
+function closeModal(id){document.getElementById(id).style.display='none'}
+</script>
+@endsection

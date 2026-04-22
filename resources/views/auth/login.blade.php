@@ -1,39 +1,91 @@
-<x-guest-layout>
-    <a href="{{ url('/') }}" class="auth-back">
-        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        Back to Home
-    </a>
-
-    <h1>Welcome back</h1>
-    <p class="auth-sub">Sign in to your Smart Organizer account</p>
-
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="/login">
-        @csrf
-
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="off" placeholder="you@example.com">
-        <x-input-error :messages="$errors->get('email')" class="mb-3" />
-
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="••••••••">
-        <x-input-error :messages="$errors->get('password')" class="mb-3" />
-
-        <div class="auth-remember">
-            <label>
-                <input type="checkbox" name="remember" style="width:auto;margin:0">
-                Remember me
-            </label>
-            @if (Route::has('password.request'))
-                <a href="#">Forgot password?</a>
-            @endif
+@extends('layouts.auth')
+@section('title', 'Login - Smart Organizer')
+@section('content')
+<div class="auth-container">
+    <a href="/" class="back-link">← Back to Home</a>
+    
+    <div class="auth-split">
+        <div class="auth-left">
+            <div class="auth-left-content">
+                <div class="auth-logo-container">
+                    <div class="auth-logo">Smart Organizer</div>
+                </div>
+                <h2 class="auth-welcome">Welcome Back</h2>
+                <p class="auth-tagline">Sign in to access your dashboard and manage your spaces efficiently.</p>
+                <div class="auth-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Access your dashboard</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Manage local offers</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Real-time group chat</span>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <button type="submit" class="btn-submit">Sign In</button>
-
-        <div class="auth-footer">
-            Don't have an account? <a href="/register">Sign up</a>
+        
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h1 class="auth-title">Sign In</h1>
+                    <p class="auth-subtitle">Enter your credentials to continue</p>
+                </div>
+                
+                <form method="POST" action="{{ route('login') }}" class="auth-form">
+                    @csrf
+                    
+                    <div class="form-group">
+                        <label for="email" class="label">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="input" 
+                            value="{{ old('email') }}" 
+                            placeholder="Enter your email"
+                            required 
+                            autofocus
+                        >
+                        @error('email')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="label">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="input" 
+                            placeholder="Enter your password"
+                            required
+                        >
+                        @error('password')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember" name="remember" class="checkbox">
+                            <label for="remember" class="checkbox-label">Remember me</label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">Sign In</button>
+                    
+                    <div class="auth-footer-link">
+                        <span class="auth-link">Don't have an account? <a href="{{ route('register') }}" class="auth-link-highlight">Sign Up</a></span>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
-</x-guest-layout>
+    </div>
+</div>
+@endsection

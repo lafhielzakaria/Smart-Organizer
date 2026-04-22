@@ -8,6 +8,7 @@ use App\Http\Controllers\Tenant\LocalController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\lessor\FriendShipsController;
 use App\Http\Controllers\lessor\LessorController;
+use App\Http\Controllers\points\PointController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,8 @@ Route::get('/register', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
+    Route::get('/points', [PointController::class, 'index'])->name('points.charge');
+    Route::post('/points/purchase', [PointController::class, 'purchase'])->name('points.purchase');
     Route::get('/tenant/dashboard', [TenantDashboardController::class, 'index'])->name('tenant.dashboard');
     Route::post('/tenant/locals', [LocalController::class, 'store'])->name('tenant.locals.store');
     Route::post('/tenant/locals/{local}/offers', [LocalOfferController::class, 'store'])->name('tenant.offers.store');
@@ -39,4 +42,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/accept-friend-request', [FriendShipsController::class, 'acceptFriendRequest'])->name('friendships.accept');
     Route::post('/send-invite', [FriendShipsController::class, 'sendInvite'])->name('invites.send');
     Route::get('/accept-invite/{localOfferId}/{userId}', [FriendShipsController::class, 'acceptInvite'])->middleware('signed')->name('invites.accept');
+    Route::post('/offers/{offer}/complete', [App\Http\Controllers\Tenant\LocalOfferController::class, 'complete'])->name('offers.complete');
 });
