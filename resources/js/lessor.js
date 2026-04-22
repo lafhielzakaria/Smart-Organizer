@@ -1,3 +1,4 @@
+console.log("aa");
 const socket = new WebSocket('ws://localhost:8080');
 const messagesDiv = document.getElementById('chat-messages');
 const input = document.getElementById('message-input');

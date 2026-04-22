@@ -192,4 +192,4 @@ class FriendShipsController extends Controller
 
         return redirect('/lessor/dashboard')->with('success', 'You have successfully accepted the invitation!');
     }
-}   
+}
