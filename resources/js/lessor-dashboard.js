@@ -32,7 +32,15 @@ resultsContainer.innerHTML='<p style="color:red;font-size:13px;">Error loading f
 
 window.closeModal=function(id){
 const el=document.getElementById(id);
-if(el)el.style.display='none';
+if(el){
+el.style.display='none';
+const modal=document.getElementById(id);
+if(modal){
+modal.querySelectorAll('.form-input, .form-select, input[type="text"], input[type="email"]').forEach(input=>{
+input.value='';
+});
+}
+}
 };
 
 window.sendFriendRequest=function(userId){
@@ -225,8 +233,11 @@ resultsContainer.innerHTML="";
 
 if(addFriendBtn)addFriendBtn.addEventListener("click",()=>openModal('addFriendModal'));
 if(friendReqBtn)friendReqBtn.addEventListener("click",()=>openModal('friendsRequestsModal'));
-if(closeAddFriend)closeAddFriend.addEventListener("click",()=>{closeModal('addFriendModal')
-    friendSearchBar.textContent = "";
+if(closeAddFriend)closeAddFriend.addEventListener("click",()=>{
+closeModal('addFriendModal');
+if(friendSearchBar)friendSearchBar.value='';
+const resultsContainer=document.getElementById("friendSearchResults");
+if(resultsContainer)resultsContainer.innerHTML='';
 });
 if(closeReqFriend)closeReqFriend.addEventListener("click",()=>closeModal('friendsRequestsModal'));
 if(inviteModalClose)inviteModalClose.addEventListener("click",()=>closeModal('inviteModal'));

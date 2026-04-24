@@ -118,12 +118,4 @@
 </div>
 </div>
 </div>
-<script>
-@if(session('success') || session('error'))
-openModal('local-modal');
-@endif
-@if(session('offer_success') || session('offer_error'))
-openModal('offer-modal');
-@endif
-</script>
 @endsection

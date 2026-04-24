@@ -1,1 +1,21 @@
 :root{--gold:#C9A84C;--gold-bright:#F0C040;--gold-dim:rgba(201,168,76,0.12);--gold-line:rgba(201,168,76,0.35);--black:#060608;--panel:#12121A;--white:#FFFFFF;--muted:rgba(255,255,255,0.38)}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--black)}.membership-page{min-height:calc(100vh - 75px);background:var(--black);font-family:'Barlow Condensed',sans-serif;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}.membership-inner{position:relative;z-index:2;max-width:700px;width:100%;padding:40px 20px}.beams{position:fixed;top:-10%;left:50%;transform:translateX(-50%);width:120%;height:80vh;pointer-events:none;z-index:0}.beam{position:absolute;top:0;transform-origin:top center;opacity:0;animation:beamSweep 8s infinite ease-in-out}.beam::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:70vh;background:linear-gradient(180deg,rgba(201,168,76,0.18) 0%,transparent 75%);clip-path:polygon(50% 0%,100% 100%,0% 100%)}.beam:nth-child(1){left:18%;animation-delay:0s;animation-duration:7s}.beam:nth-child(2){left:33%;animation-delay:1.5s;animation-duration:9s}.beam:nth-child(3){left:50%;animation-delay:0.8s;animation-duration:8s}.beam:nth-child(4){left:67%;animation-delay:2.2s;animation-duration:7.5s}.beam:nth-child(5){left:82%;animation-delay:0.4s;animation-duration:10s}@keyframes beamSweep{0%{opacity:0;transform:rotate(-18deg)}20%{opacity:1}50%{opacity:0.55;transform:rotate(18deg)}80%{opacity:1}100%{opacity:0;transform:rotate(-18deg)}}.stripe-bg{position:fixed;inset:0;background-image:repeating-linear-gradient(-55deg,transparent,transparent 40px,rgba(201,168,76,0.018) 40px,rgba(201,168,76,0.018) 41px);pointer-events:none;z-index:0}.membership-card{background:var(--panel);border:1px solid var(--gold-line);border-radius:3px;padding:60px 48px;text-align:center;animation:revealUp 0.7s ease both}.membership-icon{width:80px;height:80px;background:var(--gold-dim);border:1px solid var(--gold-line);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px}.membership-icon img{width:40px;height:40px}.membership-title{font-family:'Antonio',sans-serif;font-size:42px;font-weight:700;color:var(--white);margin-bottom:16px;letter-spacing:-1px}.membership-subtitle{font-size:16px;color:var(--muted);margin-bottom:32px;line-height:1.6}.benefit-box{background:var(--gold-dim);border:1px solid var(--gold-line);border-radius:3px;padding:24px;margin-bottom:32px}.benefit-title{font-family:'Antonio',sans-serif;font-size:24px;font-weight:700;color:var(--gold-bright);margin-bottom:12px}.benefit-desc{font-size:14px;color:var(--white);line-height:1.7}.btn-member{display:inline-block;padding:16px 48px;background:var(--gold);color:#000;border:none;border-radius:3px;font-family:'Antonio',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none}.btn-member:hover{background:var(--gold-bright);box-shadow:0 8px 30px rgba(201,168,76,0.4);transform:translateY(-2px)}@keyframes revealUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+@media (max-width:767px){
+.membership-inner{padding:32px 16px}
+.membership-card{padding:40px 24px}
+.membership-icon{width:60px;height:60px}
+.membership-icon img{width:32px;height:32px}
+.membership-title{font-size:32px}
+.membership-subtitle{font-size:14px}
+.benefit-box{padding:20px}
+.benefit-title{font-size:20px}
+.benefit-desc{font-size:13px}
+.btn-member{width:100%;padding:14px 24px}
+}
+
+@media only screen and (min-width:768px) and (max-width:1024px){
+body{background:lightcoral}
+.membership-inner{padding:40px 32px}
+.membership-card{padding:50px 40px}
+.membership-title{font-size:38px}
+}

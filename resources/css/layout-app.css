@@ -157,3 +157,22 @@ body {
 .nav-back-link:hover {
     color: var(--gold);
 }
+
+@media (max-width:767px){
+.navbar{padding:0 16px;height:65px}
+.navbar-left{gap:16px}
+.navbar-logo-icon{width:32px;height:32px}
+.navbar-logo-text{font-size:16px;display:none}
+.navbar-right{gap:10px}
+.btn-charge{width:40px;height:40px}
+.balance-display{padding:6px 12px}
+.balance-text{font-size:14px}
+.btn-logout{padding:8px 14px;font-size:10px}
+}
+
+@media only screen and (min-width:768px) and (max-width:1024px){
+body{background:lightcoral}
+.navbar{padding:0 24px}
+.navbar-left{gap:20px}
+.navbar-right{gap:12px}
+}

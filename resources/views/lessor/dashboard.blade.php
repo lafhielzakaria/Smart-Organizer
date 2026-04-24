@@ -16,10 +16,9 @@
         acceptFriendshipUrl: "{{ route('friendships.accept') }}",
         friendsSearchUrl: "{{ route('friends.accepted.search') }}",
         sendInviteUrl: "{{ route('invites.send') }}",
-        @if($currentLocalOffer && $currentLocalOffer -> endTime) hasTimer: true,
-        endTime: "{{ $currentLocalOffer->endTime }}",
-        completeOfferUrl: "{{ route('offers.complete', $currentLocalOffer->id) }}"
-        @else hasTimer: false @endif
+        hasTimer: {{ $currentLocalOffer && $currentLocalOffer->endTime ? 'true' : 'false' }},
+        endTime: "{{ $currentLocalOffer && $currentLocalOffer->endTime ? $currentLocalOffer->endTime : '' }}",
+        completeOfferUrl: "{{ $currentLocalOffer && $currentLocalOffer->endTime ? route('offers.complete', $currentLocalOffer->id) : '' }}"
     };
 </script>
 @endsection

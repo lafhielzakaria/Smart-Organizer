@@ -14,9 +14,9 @@ class PurchasePointsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pack_points' => 'required|integer|in:100,550,1400,3000,6000,15000',
-            'pack_price' => 'required|numeric|min:0.99|max:49.99',
-            'pack_label' => 'required|string|in:Starter,Rookie,Pro,Elite,Legend,Ultimate',
+            'pack_points' => 'required|integer',
+            'pack_price' => 'required|numeric',
+            'pack_label' => 'required|string',
         ];
     }
 

@@ -103,9 +103,11 @@ window.closeModal = function(id) {
     if (form) {
         form.reset();
         form.querySelectorAll('.form-input, .form-select').forEach(input => {
+            input.value = '';
             input.style.border = '';
             const errorDiv = input.nextElementSibling;
             if (errorDiv && errorDiv.classList.contains('error-message')) {
+                errorDiv.textContent = '';
                 errorDiv.classList.add('hidden');
             }
         });
