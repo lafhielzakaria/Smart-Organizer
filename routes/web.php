@@ -23,6 +23,13 @@ Route::get('/register', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
+    Route::get('/membership/benefits', function () {
+        return view('membership.benefits');
+    })->name('membership.benefits');
+    Route::post('/membership/subscribe', function () {
+        Auth::user()->update(['isMember' => true]);
+        return redirect()->route('lessor.dashboard')->with('success', 'You are now a premium member!');
+    })->name('membership.subscribe');
     Route::get('/points', [PointController::class, 'index'])->name('points.charge');
     Route::post('/points/purchase', [PointController::class, 'purchase'])->name('points.purchase');
     Route::get('/tenant/dashboard', [TenantDashboardController::class, 'index'])->name('tenant.dashboard');

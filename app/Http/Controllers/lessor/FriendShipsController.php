@@ -139,7 +139,6 @@ class FriendShipsController extends Controller
                 return response()->json(['message' => 'User or offer not found'], 404);
             }
 
-            // Check if receiver already has an active participation
             $activeParticipation = Participation::where('user_id', $receiverId)
                 ->whereNull('leftAt')
                 ->first();
@@ -148,9 +147,7 @@ class FriendShipsController extends Controller
                 return response()->json(['message' => 'This user is already participating in another local offer'], 400);
             }
 
-            // Send notification to the receiver
             $receiver->notify(new InviteNotification($sender, $localOffer));
-
             return response()->json(['message' => 'Invite sent successfully'], 200);
         } catch (\Exception $e) {
             \Log::error('Invite send error: ' . $e->getMessage());
@@ -160,12 +157,10 @@ class FriendShipsController extends Controller
 
     public function acceptInvite(Request $request, $localOfferId, $userId)
     {
-        // Verify the signature
         if (!$request->hasValidSignature()) {
             return redirect('/lessor/dashboard')->with('error', 'Invalid or expired invitation link');
         }
 
-        // Check if user already has an active participation (not left yet)
         $activeParticipation = Participation::where('user_id', $userId)
             ->whereNull('leftAt')
             ->first();
@@ -179,15 +174,13 @@ class FriendShipsController extends Controller
             return redirect('/lessor/dashboard')->with('error', 'Offer not found');
         }
 
-        // Calculate share price
         $currentParticipations = Participation::where('local_offer_id', $localOfferId)->count() + 1;
         $priceToJoin = $localOffer->totalPrice / $currentParticipations;
-
-        // Create participation
         Participation::create([
             'sharePrice' => $priceToJoin,
             'local_offer_id' => $localOfferId,
             'user_id' => $userId,
+            'joinedAt' => now(),
         ]);
 
         return redirect('/lessor/dashboard')->with('success', 'You have successfully accepted the invitation!');

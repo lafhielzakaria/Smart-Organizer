@@ -2,15 +2,23 @@
 @section('title', 'Tenant Dashboard')
 @section('head')
 <link href="https://fonts.bunny.net/css?family=antonio:400,500,600,700&family=barlow-condensed:400,500,600,700,800,900&family=barlow:400,500,600" rel="stylesheet">
-<style>
-:root{--gold:#C9A84C;--gold-bright:#F0C040;--gold-dim:rgba(201,168,76,0.12);--gold-line:rgba(201,168,76,0.35);--black:#060608;--dark:#0D0D10;--panel:#12121A;--panel2:#1A1A26;--white:#FFFFFF;--muted:rgba(255,255,255,0.38);--green:#00C853}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--black)}.dashboard-page{min-height:calc(100vh - 65px);background:var(--black);font-family:'Barlow Condensed',sans-serif;position:relative;overflow:hidden}.beams{position:fixed;top:-10%;left:50%;transform:translateX(-50%);width:120%;height:80vh;pointer-events:none;z-index:0}.beam{position:absolute;top:0;transform-origin:top center;opacity:0;animation:beamSweep 8s infinite ease-in-out}.beam::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:70vh;background:linear-gradient(180deg,rgba(201,168,76,0.18) 0%,transparent 75%);clip-path:polygon(50% 0%,100% 100%,0% 100%)}.beam:nth-child(1){left:18%;animation-delay:0s;animation-duration:7s}.beam:nth-child(2){left:33%;animation-delay:1.5s;animation-duration:9s}.beam:nth-child(3){left:50%;animation-delay:0.8s;animation-duration:8s}.beam:nth-child(4){left:67%;animation-delay:2.2s;animation-duration:7.5s}.beam:nth-child(5){left:82%;animation-delay:0.4s;animation-duration:10s}@keyframes beamSweep{0%{opacity:0;transform:rotate(-18deg)}20%{opacity:1}50%{opacity:0.55;transform:rotate(18deg)}80%{opacity:1}100%{opacity:0;transform:rotate(-18deg)}}.stripe-bg{position:fixed;inset:0;background-image:repeating-linear-gradient(-55deg,transparent,transparent 40px,rgba(201,168,76,0.018) 40px,rgba(201,168,76,0.018) 41px);pointer-events:none;z-index:0}.dashboard-inner{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:52px 28px 100px}.dash-header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:40px;animation:revealUp 0.7s ease both}.hdr-line{height:1px;background:linear-gradient(90deg,transparent,var(--gold-line))}.hdr-line.r{background:linear-gradient(90deg,var(--gold-line),transparent)}.hdr-center{text-align:center;padding:0 36px}.hdr-eyebrow{display:block;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.hdr-title{font-family:'Antonio',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:-1px;line-height:1}.hdr-title span{color:var(--gold-bright)}.action-bar{display:flex;gap:10px;margin-bottom:32px;animation:revealUp 0.7s 0.1s ease both}.btn-gold{padding:10px 18px;background:var(--gold);color:#000;border:none;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.25s}.btn-gold:hover{background:var(--gold-bright);box-shadow:0 4px 20px rgba(201,168,76,0.3)}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;animation:revealUp 0.6s 0.2s ease both}.stat-card{background:var(--panel);border:1px solid rgba(255,255,255,0.07);border-radius:3px;padding:24px;transition:all 0.3s}.stat-card:hover{border-color:var(--gold-line);transform:translateY(-4px)}.stat-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}.stat-value{font-family:'Antonio',sans-serif;font-size:42px;font-weight:700;color:var(--white);line-height:1;margin-bottom:8px}.stat-desc{font-size:11px;color:var(--muted)}.card{background:var(--panel);border:1px solid rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;animation:revealUp 0.6s 0.3s ease both;transition:border-color 0.3s;margin-bottom:20px}.card:hover{border-color:var(--gold-line)}.card-header{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between}.card-header h2{font-family:'Antonio',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--white);margin:0}.card-badge{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold)}.card-body{padding:20px}.local-item{padding:20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;transition:all 0.2s}.local-item:last-child{border-bottom:none}.local-item:hover{background:var(--gold-dim)}.local-info h4{font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px}.local-info p{font-size:12px;color:var(--muted)}.local-meta{display:flex;align-items:center;gap:12px}.status-badge{padding:6px 12px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:3px;background:var(--gold);color:#000}.status-badge.inactive{background:rgba(255,255,255,0.1);color:var(--muted)}.offers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:20px}.offer-card{background:var(--panel2);border:1px solid rgba(255,255,255,0.07);border-radius:3px;padding:16px;transition:all 0.25s}.offer-card:hover{border-color:var(--gold);transform:translateY(-4px)}.offer-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:12px}.offer-local{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold);text-transform:uppercase}.offer-status{padding:4px 8px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:2px;background:var(--gold);color:#000}.offer-status.completed{background:rgba(255,255,255,0.1);color:var(--muted)}.offer-date{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px}.offer-time{font-size:11px;color:var(--muted);margin-bottom:12px}.offer-footer{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.05)}.offer-price{color:var(--gold-bright);font-weight:700}.offer-participants{color:var(--white);font-weight:600}.progress-bar{width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;margin-top:8px}.progress-fill{height:100%;background:var(--gold);transition:width 0.3s}.empty-state{padding:60px 20px;text-align:center}.empty-icon{width:60px;height:60px;margin:0 auto 16px;opacity:0.3}.empty-text{font-size:14px;color:var(--muted)}.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}.modal-content{background:var(--panel);border:1px solid var(--gold-line);border-radius:3px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto;animation:modalPop 0.3s ease}@keyframes modalPop{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}.modal-header{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between}.modal-header h3{font-family:'Antonio',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--white);margin:0}.modal-body{padding:20px}.modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--muted);transition:color 0.2s}.modal-close:hover{color:var(--gold)}.form-group{margin-bottom:20px}.form-label{display:block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}.form-input,.form-select{width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,0.14);border-radius:3px;outline:none;font-size:13px;background:var(--panel2);color:var(--white);font-family:'Barlow Condensed',sans-serif;transition:all 0.2s}.form-input:focus,.form-select:focus{border-color:var(--gold)}.btn-submit{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:3px;font-family:'Antonio',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s}.btn-submit:hover{background:var(--gold-bright);box-shadow:0 6px 30px rgba(201,168,76,0.35)}@keyframes revealUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}@media (max-width:900px){.stats-grid{grid-template-columns:1fr}.offers-grid{grid-template-columns:1fr}.dash-header{grid-template-columns:1fr}.hdr-line{display:none}}
-</style>
+@vite(['resources/css/tenant-dashboard.css', 'resources/js/tenant-dashboard.js'])
 @endsection
 @section('content')
 <div class="dashboard-page">
 <div class="beams"><div class="beam"></div><div class="beam"></div><div class="beam"></div><div class="beam"></div><div class="beam"></div></div>
 <div class="stripe-bg"></div>
 <div class="dashboard-inner">
+@if(session('success'))
+<div style="padding:16px 20px;margin-bottom:24px;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.3);border-radius:3px;animation:revealUp 0.5s ease;">
+<p style="color:var(--green);font-size:13px;font-weight:600;margin:0;">✓ {{ session('success') }}</p>
+</div>
+@endif
+@if(session('error'))
+<div style="padding:16px 20px;margin-bottom:24px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.3);border-radius:3px;animation:revealUp 0.5s ease;">
+<p style="color:#ff6b6b;font-size:13px;font-weight:600;margin:0;">✕ {{ session('error') }}</p>
+</div>
+@endif
 <div class="dash-header"><div class="hdr-line"></div><div class="hdr-center"><span class="hdr-eyebrow">Smart Organizer</span><div class="hdr-title">Tenant <span>Dashboard</span></div></div><div class="hdr-line r"></div></div>
 <div class="action-bar"><button type="button" onclick="openModal('local-modal')" class="btn-gold">+ Create Local</button><button type="button" onclick="openModal('offer-modal')" class="btn-gold">+ Create Offer</button></div>
 <div class="stats-grid">
@@ -22,6 +30,11 @@
 <div class="card-header"><h2>My Locals</h2><span class="card-badge">{{ $myLocals->count() }} total</span></div>
 @forelse($myLocals as $local)
 <div class="local-item">
+@if($local->image)
+<img src="{{ str_starts_with($local->image, 'http') ? $local->image : asset('storage/' . $local->image) }}" alt="{{ $local->name }}" style="width:80px;height:80px;object-fit:cover;border-radius:3px;margin-right:16px;">
+@else
+<div style="width:80px;height:80px;background:var(--panel2);border-radius:3px;margin-right:16px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;">No image</div>
+@endif
 <div class="local-info"><h4>{{ $local->name }}</h4><p>{{ $local->city }} • {{ ucfirst($local->type) }} • Capacity: {{ $local->capacity }} • {{ $local->price }} pts</p></div>
 <div class="local-meta"><span class="status-badge {{ $local->status === 'active' ? '' : 'inactive' }}">{{ ucfirst($local->status) }}</span><span style="font-size:11px;color:var(--muted)">{{ $local->local_offers_count }} offer(s)</span></div>
 </div>
@@ -54,12 +67,26 @@
 <div class="modal-content">
 <div class="modal-header"><h3>Create Local</h3><button onclick="closeModal('local-modal')" class="modal-close">&times;</button></div>
 <div class="modal-body">
-<form method="POST" action="{{ route('tenant.locals.store') }}">
+<form method="POST" action="{{ route('tenant.locals.store') }}" enctype="multipart/form-data">
 @csrf
+@if(session('success'))
+<div style="padding:12px;margin-bottom:16px;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.3);border-radius:3px;">
+<p style="color:var(--green);font-size:12px;font-weight:600;margin:0;">✓ {{ session('success') }}</p>
+</div>
+@endif
+@if(session('error'))
+<div style="padding:12px;margin-bottom:16px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.3);border-radius:3px;">
+<p style="color:#ff6b6b;font-size:12px;font-weight:600;margin:0;">✕ {{ session('error') }}</p>
+</div>
+@endif
 <div class="form-group"><label class="form-label">Name</label><input type="text" name="name" class="form-input" required></div>
-<div class="form-group"><label class="form-label">Type</label><select name="type" class="form-select" required><option value="">Select type</option><option value="sports">Sports Field</option><option value="study">Study Room</option><option value="coworking">Coworking Space</option><option value="other">Other</option></select></div>
+<div class="form-group"><label class="form-label">Type</label><select name="type" class="form-select" required><option value="">Select type</option><option value="restaurant">Restaurant</option><option value="café">Café</option><option value="club">Club</option><option value="bar">Bar</option><option value="lounge">Lounge</option></select></div>
+<div class="form-group"><label class="form-label">Capacity</label><input type="number" name="capacity" class="form-input" min="1" required></div>
 <div class="form-group"><label class="form-label">City</label><input type="text" name="city" class="form-input" required></div>
 <div class="form-group"><label class="form-label">Address</label><input type="text" name="andreas" class="form-input" required></div>
+<div class="form-group"><label class="form-label">Price (pts)</label><input type="number" name="price" class="form-input" min="1" required></div>
+<div class="form-group"><label class="form-label">Description</label><input type="text" name="description" class="form-input"></div>
+<div class="form-group"><label class="form-label">Image</label><div class="file-upload-wrapper" id="fileUploadWrapper"><svg class="file-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><div class="file-upload-text">Click to upload image</div><div class="file-upload-hint">PNG, JPG, GIF up to 2MB</div><div class="file-upload-name" id="fileName"></div><input type="file" name="image" id="imageInput" accept="image/*" onchange="handleFileSelect(this)"></div></div>
 <button type="submit" class="btn-submit">Create Local</button>
 </form>
 </div>
@@ -71,6 +98,16 @@
 <div class="modal-body">
 <form method="POST" action="">
 @csrf
+@if(session('offer_success'))
+<div style="padding:12px;margin-bottom:16px;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.3);border-radius:3px;">
+<p style="color:var(--green);font-size:12px;font-weight:600;margin:0;">✓ {{ session('offer_success') }}</p>
+</div>
+@endif
+@if(session('offer_error'))
+<div style="padding:12px;margin-bottom:16px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.3);border-radius:3px;">
+<p style="color:#ff6b6b;font-size:12px;font-weight:600;margin:0;">✕ {{ session('offer_error') }}</p>
+</div>
+@endif
 <div class="form-group"><label class="form-label">Local</label><select name="local_id" class="form-select">@foreach($myLocals as $local)<option value="{{ $local->id }}">{{ $local->name }}</option>@endforeach</select></div>
 <div class="form-group"><label class="form-label">Start Time</label><input type="datetime-local" name="startTime" class="form-input"></div>
 <div class="form-group"><label class="form-label">End Time</label><input type="datetime-local" name="endTime" class="form-input"></div>
@@ -82,7 +119,11 @@
 </div>
 </div>
 <script>
-function openModal(id){document.getElementById(id).style.display='flex'}
-function closeModal(id){document.getElementById(id).style.display='none'}
+@if(session('success') || session('error'))
+openModal('local-modal');
+@endif
+@if(session('offer_success') || session('offer_error'))
+openModal('offer-modal');
+@endif
 </script>
 @endsection

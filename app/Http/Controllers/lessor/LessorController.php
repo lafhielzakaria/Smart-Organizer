@@ -11,13 +11,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth; 
 class LessorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $user = Auth::user();
-        $userCurrentParticipation = Participation::orderBy('created_at', 'desc')->where('user_id', $user->id)->whereNull('leftAt')->first();
+        $userCurrentParticipation = Participation::orderBy('id', 'desc')->where('user_id', $user->id)->whereNull('leftAt')->first();
         
         $currentLocalOffer = null;
         $participantsCount = 0;
@@ -25,7 +22,7 @@ class LessorController extends Controller
         
         if ($userCurrentParticipation) {
             $currentLocalOffer = LocalOffer::with('local')->find($userCurrentParticipation->local_offer_id);
-            $participantRecords = Participation::with('user')->where('local_offer_id', $userCurrentParticipation->local_offer_id)->whereNull('leftAt')->get();
+            $participantRecords = Participation::with('user')->where('local_offer_id', $userCurrentParticipation->local_offer_id)->whereNull('leftAt')->orderBy('created_at', 'asc')->get();
             $participantsCount = $participantRecords->count();
             $participants = $participantRecords->map(function($p) {
                 return [
@@ -33,10 +30,14 @@ class LessorController extends Controller
                     'name' => $p->user->name,
                     'email' => $p->user->email
                 ];
-            });
+            })->toArray();
         }
         
-        $availableOffers = $userCurrentParticipation ? [] : LocalOffer::with('local')->where('status', 'available')->get();
+        $availableOffers = $userCurrentParticipation ? [] : LocalOffer::with('local')
+            ->where('status', 'available')
+            ->get()
+            ->unique('local_id')
+            ->values();
         
         $chatRoom = $userCurrentParticipation
             ? ChatRoom::firstOrCreate(['local_offer_id' => $userCurrentParticipation->local_offer_id])
@@ -47,9 +48,6 @@ class LessorController extends Controller
         return view('lessor.dashboard', compact('availableOffers', 'userCurrentParticipation', 'user', 'chatRoom', 'participantsCount', 'currentLocalOffer', 'participants', 'pendingRequests'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function viewDetails(Request $request, LocalOffer $availableOffer)
     {
         if ($jobOfferViewDetails = ViewsAnalytics::where("local_offer_id", $availableOffer->id)) {
@@ -66,7 +64,6 @@ class LessorController extends Controller
     {
         $user = Auth::user();
         
-        // Check if user has an active participation (not left yet)
         $activeParticipation = Participation::where('user_id', $user->id)
             ->whereNull('leftAt')
             ->first();
@@ -83,51 +80,9 @@ class LessorController extends Controller
             'sharePrice' => $priceToJoin,
             'local_offer_id' => $availableOffer->id,
             'user_id' => $user->id,
+            'joinedAt' => now(),
         ]);
         return  Redirect('lessor/dashboard');
     }
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

@@ -45,24 +45,24 @@ class DashboardController extends Controller
     public function banUser(User $user)
     {
         $user->update(['status' => 'blocked']);
-        return redirect()->route('admin.dashboard')->with('success', 'User banned successfully');
+        return response()->json(['success' => true]);
     }
 
     public function unbanUser(User $user)
     {
         $user->update(['status' => 'active']);
-        return redirect()->route('admin.dashboard')->with('success', 'User unbanned successfully');
+        return response()->json(['success' => true]);
     }
 
     public function banLocal(Local $local)
     {
         $local->update(['status' => 'blocked']);
-        return redirect()->route('admin.dashboard')->with('success', 'Local banned successfully');
+        return response()->json(['success' => true]);
     }
 
     public function unbanLocal(Local $local)
     {
         $local->update(['status' => 'active']);
-        return redirect()->route('admin.dashboard')->with('success', 'Local unbanned successfully');
+        return response()->json(['success' => true]);
     }
 }

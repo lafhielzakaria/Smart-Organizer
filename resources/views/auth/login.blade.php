@@ -70,14 +70,6 @@
                             <span class="error-message">{{ $message }}</span>
                         @enderror
                     </div>
-                    
-                    <div class="form-options">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="remember" name="remember" class="checkbox">
-                            <label for="remember" class="checkbox-label">Remember me</label>
-                        </div>
-                    </div>
-                    
                     <button type="submit" class="btn-submit">Sign In</button>
                     
                     <div class="auth-footer-link">

@@ -32,4 +32,12 @@ class LocalOffer extends Model
     {
         return $this->hasMany(ViewsAnalytics::class);
     }
+
+    public function getSharePriceAttribute()
+    {
+        if ($this->maxParticipants > 0) {
+            return $this->totalPrice / $this->maxParticipants;
+        }
+        return 0;
+    }
 }

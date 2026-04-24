@@ -4,27 +4,28 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Local;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreLocalRequest;
 use Illuminate\Support\Facades\Auth;
 
 class LocalController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreLocalRequest $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'type'     => 'required|string|max:100',
-            'capacity' => 'required|integer|min:1',
-            'city'     => 'required|string|max:100',
-            'andreas'  => 'required|string|max:255',
-            'price'    => 'required|integer|min:1',
-        ]);
+        try {
+            $data = array_merge(
+                $request->validated(),
+                ['creator_id' => Auth::id(), 'status' => 'active']
+            );
 
-        Local::create(array_merge(
-            $request->only('name', 'type', 'capacity', 'city', 'andreas', 'price'),
-            ['creator_id' => Auth::id(), 'status' => 'active']
-        ));
+            if ($request->hasFile('image')) {
+                $data['image'] = $request->file('image')->store('locals', 'public');
+            }
 
-        return redirect()->route('tenant.dashboard')->with('success', 'Local created successfully.');
+            Local::create($data);
+
+            return redirect()->route('tenant.dashboard')->with('success', 'Local created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('tenant.dashboard')->with('error', 'Error creating local: ' . $e->getMessage());
+        }
     }
 }
