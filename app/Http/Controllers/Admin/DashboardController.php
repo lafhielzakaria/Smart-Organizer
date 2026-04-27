@@ -13,19 +13,15 @@ class DashboardController extends Controller
         $totalUsers = User::count();
         $bannedUsers = User::where('status', 'blocked')->count();
         $activeUsers = $totalUsers - $bannedUsers;
-
         $totalLocals = Local::count();
         $bannedLocals = Local::where('status', 'blocked')->count();
         $activeLocals = $totalLocals - $bannedLocals;
-
         $tenants = User::where('role_id', 2)->count();
         $lessors = User::where('role_id', 3)->count();
         $tenantPercentage = $totalUsers > 0 ? round(($tenants / $totalUsers) * 100, 1) : 0;
         $lessorPercentage = $totalUsers > 0 ? round(($lessors / $totalUsers) * 100, 1) : 0;
-
         $users = User::with('role')->latest()->limit(10)->get();
         $locals = Local::latest()->limit(10)->get();
-
         return view('admin.dashboard', compact(
             'totalUsers',
             'bannedUsers',

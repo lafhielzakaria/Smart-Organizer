@@ -59,7 +59,7 @@
 @if($user->status === 'blocked')
 <button type="button" onclick="unbanUser({{ $user->id }},this)" class="btn-action btn-unban">Unban</button>
 @else
-<button type="button" onclick="banUser({{ $user->id }},this)" class="btn-action btn-ban">Ban</button>
+<button type="button" onclick="banUser({{$user->id}},this)" class="btn-action btn-ban">Ban</button>
 @endif
 </td>
 </tr>
